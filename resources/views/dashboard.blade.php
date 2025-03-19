@@ -3,6 +3,12 @@
 @section('title', 'Dashboard')
 
 @section('content')
-    <h1>This is the dashboard</h1>
-    <a href="{{ url('/') }}" class="btn btn-outline-primary mb-3">Go to home</a>
+<div class="dashboard-container">
+    <h1 style="font-size: 50px; margin-bottom:30px">This is the dashboard</h1>
+
+    <div class="button-container">
+        <a href="{{ url('/') }}" class="btn btn-primary">Home</a>
+        <a href="{{ route('roles.index') }}" class="btn btn-secondary">Manage Roles</a>
+    </div>
+</div>
 @endsection

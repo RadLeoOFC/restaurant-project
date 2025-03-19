@@ -1,47 +1,104 @@
-name: Tests
+name: Run Laravel Tests
 
-on:
-  push:
-    branches:
-      - master
-      - '*.x'
-  pull_request:
-  schedule:
-    - cron: '0 0 * * *'
-
-permissions:
-  contents: read
+on: [push, pull_request]
 
 jobs:
-  tests:
+  test:
     runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: true
-      matrix:
-        php: [8.2, 8.3, 8.4]
-
-    name: PHP ${{ matrix.php }}
+    services:
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_ROOT_PASSWORD: secret
+          MYSQL_DATABASE: testing_database
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping -h 127.0.0.1 --user=root --password=secret"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      - name: Setup PHP
+      - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php }}
-          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite
+          php-version: 8.2
+          extensions: mbstring, bcmath, pdo_mysql
           coverage: none
 
       - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-interaction --no-progress
+        run: composer install --prefer-dist --no-progress --no-suggest
 
       - name: Copy environment file
-        run: cp .env.example .env
+        run: cp .env.testing .env
 
-      - name: Generate app key
+      - name: Override session driver
+        run: echo "SESSION_DRIVER=array" >> .env
+
+      - name: Generate application key
         run: php artisan key:generate
 
-      - name: Execute tests
-        run: php artisan test
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install NPM dependencies
+        run: npm install
+
+      - name: Build frontend assets
+        run: npm run build
+
+      - name: Wait for MySQL to be ready
+        run: |
+          echo "Waiting for MySQL to be ready..."
+          for i in {1..30}; do
+            if mysql -h "127.0.0.1" -u root -psecret -e "SHOW DATABASES"; then
+              echo "MySQL is up!"
+              break
+            fi
+            echo "Waiting for MySQL..."
+            sleep 3
+          done
+          echo "MySQL is ready!"
+
+      - name: Run database migrations and seeders
+        env:
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: testing_database
+          DB_USERNAME: root
+          DB_PASSWORD: secret
+        run: php artisan migrate --seed --force --no-interaction
+
+      - name: Debug MySQL tables
+        run: |
+          echo "Listing MySQL tables..."
+          mysql -h "127.0.0.1" -u root -psecret testing_database -e "SHOW TABLES;"
+
+      - name: Clear Laravel Cache (после миграций!)
+        run: |
+          php artisan config:clear
+          php artisan cache:clear
+          php artisan config:cache
+
+      - name: Show Laravel Logs (if exists)
+        run: cat storage/logs/laravel.log || true
+
+      - name: Run tests
+        env:
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: testing_database
+          DB_USERNAME: root
+          DB_PASSWORD: secret
+        run: |
+          php artisan config:clear
+          php artisan cache:clear
+          php artisan test
