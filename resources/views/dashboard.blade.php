@@ -9,6 +9,7 @@
     <div class="button-container">
         <a href="{{ url('/') }}" class="btn btn-primary">Home</a>
         <a href="{{ route('roles.index') }}" class="btn btn-secondary">Manage Roles</a>
+        <a href="{{ route('desks.index') }}" class="btn btn-success">Manage Desks</a>
     </div>
 </div>
 @endsection
