@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\DeskController;
 use App\Http\Controllers\SnapshotController;
+use App\Http\Controllers\ReservationController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\RoleMiddleware;
 
@@ -25,6 +26,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/snapshots/list', [SnapshotController::class, 'list']);
     Route::post('/snapshots/load', [SnapshotController::class, 'load']);
     Route::post('/snapshots/reset', [SnapshotController::class, 'reset']);
+
+    Route::resource('reservations', ReservationController::class);
 });
 
 Route::middleware('auth')->group(function () {
