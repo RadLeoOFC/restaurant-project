@@ -10,6 +10,10 @@
         <a href="{{ url('/') }}" class="btn btn-primary">Home</a>
         <a href="{{ route('roles.index') }}" class="btn btn-secondary">Manage Roles</a>
         <a href="{{ route('desks.index') }}" class="btn btn-success">Manage Desks</a>
+<<<<<<< HEAD
+=======
+        <a href="{{ route('desks.map') }}" class="btn btn-warning">Desk Map</a>
+>>>>>>> master
     </div>
 </div>
 @endsection

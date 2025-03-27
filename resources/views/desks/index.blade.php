@@ -5,7 +5,8 @@
 @section('content')
 <div class="container mt-4">
     <h1 style="font-size: 30px; margin-bottom:20px">Desk List</h1>
-    <a href="{{ route('desks.create') }}" class="btn btn-primary" style="margin-bottom:10px">Add Desk</a>
+    <a href="{{ route('desks.create') }}" class="btn btn-primary mb-3" style="margin-bottom:10px">Add Desk</a>
+    <a href="{{ route('desks.map') }}" class="btn btn-secondary mb-3">View Map</a>
     
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>

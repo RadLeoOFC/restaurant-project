@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Desk;
+use App\Models\DeskSnapshot;
 use Illuminate\Http\Request;
 
 class DeskController extends Controller
@@ -15,6 +16,13 @@ class DeskController extends Controller
         $desks = Desk::all();
         return view('desks.index', compact('desks'));
     }
+
+    public function map()
+    {
+        $desks = Desk::all();
+        return view('desks.map', compact('desks'));
+    }
+
 
     /**
      * Show the form for creating a new resource.
@@ -70,18 +78,48 @@ class DeskController extends Controller
             'coordinates_x' => 'sometimes|integer',
             'coordinates_y' => 'sometimes|integer',
         ]);
-
+    
         $desk->update($validated);
-
+    
+        // Явно проверяем: AJAX или обычный запрос
+        if ($request->ajax()) {
+            return response()->json(['success' => true]);
+        }
+    
         return redirect()->route('desks.index')->with('success', 'Desk updated successfully.');
     }
+    
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Desk $desk)
+    public function destroy(Request $request, Desk $desk)
     {
         $desk->delete();
+    
+        if ($request->ajax()) {
+            return response()->json(['success' => true]);
+        }
+    
         return redirect()->route('desks.index')->with('success', 'Desk deleted successfully.');
-    }
+    }   
+    
+    public function saveSnapshot()
+    {
+        $date = now()->toDateString();
+    
+        // Delete existing snapshots for today (to avoid duplicates)
+        DeskSnapshot::where('snapshot_date', $date)->delete();
+    
+        foreach (Desk::all() as $desk) {
+            DeskSnapshot::create([
+                'desk_id' => $desk->id,
+                'coordinates_x' => $desk->coordinates_x,
+                'coordinates_y' => $desk->coordinates_y,
+                'snapshot_date' => $date,
+            ]);
+        }
+    
+        return redirect()->back()->with('success', 'A snapshot of the current layout has been saved.');
+    }    
 }
