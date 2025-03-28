@@ -30,13 +30,14 @@
             </div>
 
             <div class="mb-3">
-                <label for="customer_name" class="form-label d-block text-start">Customer Name</label>
-                <input type="text" name="customer_name" class="form-control" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="contact" class="form-label d-block text-start">Contact</label>
-                <input type="text" name="contact" class="form-control" required>
+                <label for="customer_id" class="form-label d-block text-start">Customer</label>
+                <select name="customer_id" id="customer_id" class="form-select" required>
+                    @foreach ($customers as $customer)
+                        <option value="{{ $customer->id }}">
+                            {{ $customer->name }}
+                        </option>
+                    @endforeach
+                </select>
             </div>
 
             <div class="mb-3">

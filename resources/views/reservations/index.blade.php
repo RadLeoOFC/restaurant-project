@@ -15,7 +15,6 @@
                 <tr>
                     <th>Desk</th>
                     <th>Customer</th>
-                    <th>Contact</th>
                     <th>Date</th>
                     <th>Time</th>
                     <th>Status</th>
@@ -25,9 +24,8 @@
             <tbody>
                 @forelse ($reservations as $reservation)
                     <tr>
-                        <td>Desk №{{ $reservation->desk_id }}</td>
-                        <td>{{ $reservation->customer_name }}</td>
-                        <td>{{ $reservation->contact }}</td>
+                        <td>{{ $reservation->desk->name }}</td>
+                        <td>{{ $reservation->customer->name }}</td>
                         <td>{{ $reservation->reservation_date }}</td>
                         <td>{{ $reservation->reservation_time }}</td>
                         <td>{{ $reservation->status }}</td>

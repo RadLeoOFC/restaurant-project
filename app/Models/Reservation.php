@@ -12,8 +12,7 @@ class Reservation extends Model
     // Allow mass assignment for these fields
     protected $fillable = [
         'desk_id',
-        'customer_name',
-        'contact',
+        'customer_id',
         'reservation_date',
         'reservation_time',
         'status',
@@ -24,4 +23,10 @@ class Reservation extends Model
     {
         return $this->belongsTo(Desk::class);
     }
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
+    }
+
 }
