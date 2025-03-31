@@ -31,6 +31,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('reservations', ReservationController::class);
     Route::resource('customers', CustomerController::class);
 
+    Route::resource('notification-templates', \App\Http\Controllers\NotificationTemplateController::class);
 });
 
 Route::middleware('auth')->group(function () {

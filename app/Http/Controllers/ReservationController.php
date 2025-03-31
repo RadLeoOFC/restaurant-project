@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Reservation;
 use App\Models\Desk;
-use App\Models\Customer; // Добавляем модель Customer
+use App\Models\Customer;
+use App\Models\NotificationTemplate;
 use Illuminate\Http\Request;
+use App\Notifications\ReservationNotification;
+use App\Models\User;
 
 class ReservationController extends Controller
 {
@@ -24,7 +27,7 @@ class ReservationController extends Controller
     public function create()
     {
         $desks = Desk::all();
-        $customers = Customer::all(); // Получаем список зарегистрированных клиентов
+        $customers = Customer::all();
         return view('reservations.create', compact('desks', 'customers'));
     }
 
@@ -41,7 +44,7 @@ class ReservationController extends Controller
             'status' => 'required|in:new,confirmed,cancelled',
         ]);
 
-        // Проверка на занятость стола
+        // Check if desk is already reserved
         $exists = Reservation::where('desk_id', $request->desk_id)
             ->where('reservation_date', $request->reservation_date)
             ->where('reservation_time', $request->reservation_time)
@@ -51,14 +54,28 @@ class ReservationController extends Controller
             return back()->withErrors(['desk_id' => 'This desk is already reserved at the selected time.']);
         }
 
-        // Создание бронирования
-        Reservation::create([
+        // Create reservation
+        $reservation = Reservation::create([
             'desk_id' => $request->desk_id,
-            'customer_id' => $request->customer_id, 
+            'customer_id' => $request->customer_id,
             'reservation_date' => $request->reservation_date,
             'reservation_time' => $request->reservation_time,
             'status' => $request->status,
         ]);
+
+        // Get customer's preferred language
+        $customer = Customer::find($request->customer_id);
+        $language = $customer->preferred_language ?? 'en';
+
+        // Get notification template
+        $template = NotificationTemplate::where('key', 'reservation_created')
+            ->where('language_code', $language)
+            ->first();
+
+        $message = $template->body ?? 'Reservation created successfully.';
+
+        // Send notification to current user (or change to customer if needed)
+        auth()->user()->notify(new ReservationNotification($message));
 
         return redirect()->route('reservations.index')->with('success', 'Reservation created.');
     }
@@ -86,8 +103,22 @@ class ReservationController extends Controller
             'status' => 'required|in:new,confirmed,cancelled',
         ]);
 
-        // Обновление бронирования
+        // Update reservation
         $reservation->update($validated);
+
+        // Get customer's preferred language
+        $customer = Customer::find($request->customer_id);
+        $language = $customer->preferred_language ?? 'en';
+
+        // Get notification template
+        $template = NotificationTemplate::where('key', 'reservation_updated')
+            ->where('language_code', $language)
+            ->first();
+
+        $message = $template->body ?? 'Reservation updated successfully.';
+
+        // Send notification to current user
+        auth()->user()->notify(new ReservationNotification($message));
 
         return redirect()->route('reservations.index')->with('success', 'Reservation updated.');
     }
@@ -97,7 +128,21 @@ class ReservationController extends Controller
      */
     public function destroy(Reservation $reservation)
     {
+        $customer = $reservation->customer;
+        $language = $customer->preferred_language ?? 'en';
+
+        $template = NotificationTemplate::where('key', 'reservation_cancelled')
+            ->where('language_code', $language)
+            ->first();
+
+        $message = $template->body ?? 'Reservation cancelled.';
+
+        // Delete reservation
         $reservation->delete();
+
+        // Send notification to current user
+        auth()->user()->notify(new ReservationNotification($message));
+
         return redirect()->route('reservations.index')->with('success', 'Reservation deleted.');
     }
 }
