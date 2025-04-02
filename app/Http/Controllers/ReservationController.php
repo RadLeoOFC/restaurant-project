@@ -8,7 +8,6 @@ use App\Models\Customer;
 use App\Models\NotificationTemplate;
 use Illuminate\Http\Request;
 use App\Notifications\ReservationNotification;
-use App\Models\User;
 
 class ReservationController extends Controller
 {
@@ -36,6 +35,7 @@ class ReservationController extends Controller
      */
     public function store(Request $request)
     {
+        // Validate request input
         $validated = $request->validate([
             'desk_id' => 'required|exists:desks,id',
             'customer_id' => 'required|exists:customers,id',
@@ -44,7 +44,7 @@ class ReservationController extends Controller
             'status' => 'required|in:new,confirmed,cancelled',
         ]);
 
-        // Check if desk is already reserved
+        // Check if desk is already reserved at given date and time
         $exists = Reservation::where('desk_id', $request->desk_id)
             ->where('reservation_date', $request->reservation_date)
             ->where('reservation_time', $request->reservation_time)
@@ -55,27 +55,10 @@ class ReservationController extends Controller
         }
 
         // Create reservation
-        $reservation = Reservation::create([
-            'desk_id' => $request->desk_id,
-            'customer_id' => $request->customer_id,
-            'reservation_date' => $request->reservation_date,
-            'reservation_time' => $request->reservation_time,
-            'status' => $request->status,
-        ]);
+        $reservation = Reservation::create($validated);
 
-        // Get customer's preferred language
-        $customer = Customer::find($request->customer_id);
-        $language = $customer->preferred_language ?? 'en';
-
-        // Get notification template
-        $template = NotificationTemplate::where('key', 'reservation_created')
-            ->where('language_code', $language)
-            ->first();
-
-        $message = $template->body ?? 'Reservation created successfully.';
-
-        // Send notification to current user (or change to customer if needed)
-        auth()->user()->notify(new ReservationNotification($message));
+        // Send notification to customer
+        $this->notifyCustomer($reservation->customer, 'reservation_created');
 
         return redirect()->route('reservations.index')->with('success', 'Reservation created.');
     }
@@ -95,6 +78,7 @@ class ReservationController extends Controller
      */
     public function update(Request $request, Reservation $reservation)
     {
+        // Validate input
         $validated = $request->validate([
             'desk_id' => 'required|exists:desks,id',
             'customer_id' => 'required|exists:customers,id',
@@ -106,19 +90,8 @@ class ReservationController extends Controller
         // Update reservation
         $reservation->update($validated);
 
-        // Get customer's preferred language
-        $customer = Customer::find($request->customer_id);
-        $language = $customer->preferred_language ?? 'en';
-
-        // Get notification template
-        $template = NotificationTemplate::where('key', 'reservation_updated')
-            ->where('language_code', $language)
-            ->first();
-
-        $message = $template->body ?? 'Reservation updated successfully.';
-
-        // Send notification to current user
-        auth()->user()->notify(new ReservationNotification($message));
+        // Send update notification
+        $this->notifyCustomer($reservation->customer, 'reservation_updated');
 
         return redirect()->route('reservations.index')->with('success', 'Reservation updated.');
     }
@@ -129,20 +102,30 @@ class ReservationController extends Controller
     public function destroy(Reservation $reservation)
     {
         $customer = $reservation->customer;
-        $language = $customer->preferred_language ?? 'en';
-
-        $template = NotificationTemplate::where('key', 'reservation_cancelled')
-            ->where('language_code', $language)
-            ->first();
-
-        $message = $template->body ?? 'Reservation cancelled.';
 
         // Delete reservation
         $reservation->delete();
 
-        // Send notification to current user
-        auth()->user()->notify(new ReservationNotification($message));
+        // Send cancellation notification
+        $this->notifyCustomer($customer, 'reservation_cancelled');
 
         return redirect()->route('reservations.index')->with('success', 'Reservation deleted.');
     }
+
+    /**
+     * Notify customer using language-specific template.
+     */
+    protected function notifyCustomer(Customer $customer, string $templateKey)
+    {
+        $language = $customer->preferred_language ?? 'en';
+        $notification = new ReservationNotification($templateKey, $language);
+    
+        // Уведомляем клиента
+        $customer->notify($notification);
+    
+        // Также уведомляем администратора
+        if (auth()->check()) {
+            auth()->user()->notify($notification);
+        }
+    }    
 }

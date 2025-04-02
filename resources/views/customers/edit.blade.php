@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container mt-4">
-    <h2 style="font-size: 30px; margin-bottom:20px">Edit Customer</h2>
+    <h2 style="font-size: 30px; margin-bottom:20px">{{ __('messages.edit_customer') }}</h2>
 
     @if ($errors->any())
         <div class="alert alert-danger">
@@ -19,27 +19,27 @@
         @method('PUT')
 
         <div class="mb-3">
-            <label for="name" class="form-label d-block text-start">Name</label>
+            <label for="name" class="form-label d-block text-start">{{ __('messages.name') }}</label>
             <input type="text" name="name" class="form-control" value="{{ $customer->name }}" required>
         </div>
 
         <div class="mb-3">
-            <label for="email" class="form-label d-block text-start">Email</label>
+            <label for="email" class="form-label d-block text-start">{{ __('messages.email') }}</label>
             <input type="email" name="email" class="form-control" value="{{ $customer->email }}" required>
         </div>
 
         <div class="mb-3">
-            <label for="phone" class="form-label d-block text-start">Phone</label>
+            <label for="phone" class="form-label d-block text-start">{{ __('messages.phone') }}</label>
             <input type="text" name="phone" class="form-control" value="{{ $customer->phone }}" required>
         </div>
 
         <div class="mb-3">
-            <label for="preferred_language" class="form-label d-block text-start">Preferred Language</label>
+            <label for="preferred_language" class="form-label d-block text-start">{{ __('messages.preferred_language') }}</label>
             <input type="text" name="preferred_language" class="form-control" value="{{ $customer->preferred_language }}">
         </div>
 
-        <a href="{{ route('customers.index') }}" class="btn btn-secondary">Back</a>
-        <button type="submit" class="btn btn-success">Update</button>
+        <a href="{{ route('customers.index') }}" class="btn btn-secondary">{{ __('messages.back') }}</a>
+        <button type="submit" class="btn btn-success">{{ __('messages.update') }}</button>
     </form>
 </div>
 @endsection

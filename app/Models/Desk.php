@@ -1,5 +1,7 @@
 <?php
 
+// app/Models/Desk.php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,5 +18,13 @@ class Desk extends Model
         'coordinates_x',
         'coordinates_y',
     ];
+
+    // Новый аксессор
+    public function getTranslatedNameAttribute()
+    {
+        $number = preg_replace('/[^0-9]/', '', $this->name);
+        return __('messages.desk_number') . ' №' . $number;
+    }
 }
+
 

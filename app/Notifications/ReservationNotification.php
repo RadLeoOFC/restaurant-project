@@ -4,36 +4,39 @@ namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
+use App\Models\NotificationTemplate;
 
 class ReservationNotification extends Notification
 {
     use Queueable;
 
-    protected $message;
+    protected $key;
+    protected $language;
 
-    /**
-     * Create a new notification instance.
-     */
-    public function __construct($message)
+    public function __construct(string $key, string $language = 'en')
     {
-        $this->message = $message;
+        $this->key = $key;
+        $this->language = $language;
     }
 
-    /**
-     * Get the notification's delivery channels.
-     */
     public function via($notifiable)
     {
         return ['database'];
     }
 
-    /**
-     * Get the array representation of the notification.
-     */
     public function toArray($notifiable)
     {
+        // Пробуем взять язык клиента из сессии, иначе fallback на установленный в Notification
+        $language = session('customer_locale', $this->language);
+
+        $template = NotificationTemplate::where('key', $this->key)
+            ->where('language_code', $language)
+            ->first();
+
+        $message = $template ? $template->body : 'Default reservation message.';
+
         return [
-            'message' => $this->message,
+            'message' => $message,
         ];
     }
 }

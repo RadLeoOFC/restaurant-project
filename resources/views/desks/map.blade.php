@@ -1,15 +1,17 @@
 @extends('layouts.app')
 
-@section('title', 'Desk map')
+@section('title', __('messages.desk_map'))
 
 @section('content')
 <div class="container mt-4">
-    <h1 style="font-size: 30px; margin-bottom:20px">Desk Layout</h1>
+    <h1 style="font-size: 30px; margin-bottom:20px">{{ __('messages.desk_layout') }}</h1>
 
-    <a href="{{ route('desks.create') }}" class="btn btn-primary mb-3">Add Desk</a>
-    <a href="{{ route('desks.index') }}" class="btn btn-secondary mb-3">Go to desks list</a>
-    <a href="{{ route('desks.snapshot') }}" class="btn btn-warning mb-3">Save the snapshot</a>
-    <a href="javascript:void(0);" onclick="resetToTodaySnapshot()" class="btn btn-danger mb-3 ms-2">Reset Map</a>
+    <a href="{{ route('desks.create') }}" class="btn btn-primary mb-3">{{ __('messages.add_desk') }}</a>
+    <a href="{{ route('desks.index') }}" class="btn btn-secondary mb-3">{{ __('messages.back_to_list') }}</a>
+    <a href="{{ route('desks.snapshot') }}" class="btn btn-warning mb-3">{{ __('messages.save_snapshot') }}</a>
+    <a href="javascript:void(0);" onclick="resetToTodaySnapshot()" class="btn btn-danger mb-3 ms-2">{{ __('messages.reset_map') }}</a>
+
+    <!-- остальная часть остаётся без изменений -->
 
     <div class="zoom-pan-wrapper" id="zoom-wrapper">
         <div class="desk-map-container" id="desk-map-container">
@@ -46,7 +48,7 @@
         <div class="modal-content">
             <form id="edit-desk-form">
                 <div class="modal-header">
-                    <h5 class="modal-title">Edit Desk</h5>
+                    <h5 class="modal-title">{{ __('messages.edit_desk') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -54,22 +56,22 @@
                     <input type="hidden" id="edit-desk-coordinates-x">
                     <input type="hidden" id="edit-desk-coordinates-y">
 
-                    <label for="edit-desk-name">Name:</label>
+                    <label for="edit-desk-name">{{ __('messages.name') }}:</label>
                     <input type="text" id="edit-desk-name" class="form-control">
 
-                    <label for="edit-desk-capacity">Capacity:</label>
+                    <label for="edit-desk-capacity">{{ __('messages.capacity') }}:</label>
                     <input type="number" id="edit-desk-capacity" class="form-control">
 
-                    <label for="edit-desk-status">Status:</label>
+                    <label for="edit-desk-status">{{ __('messages.status') }}:</label>
                     <select id="edit-desk-status" class="form-control">
-                        <option value="available">Available</option>
-                        <option value="occupied">Occupied</option>
-                        <option value="selected">Selected</option>
+                        <option value="available">{{ __('messages.status_available') }}</option>
+                        <option value="occupied">{{ __('messages.status_occupied') }}</option>
+                        <option value="selected">{{ __('messages.status_selected') }}</option>
                     </select>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success">Save</button>
-                    <button type="button" id="delete-desk-btn" class="btn btn-danger">Delete</button>
+                    <button type="submit" class="btn btn-success">{{ __('messages.save') }}</button>
+                    <button type="button" id="delete-desk-btn" class="btn btn-danger">{{ __('messages.delete') }}</button>
                 </div>
             </form>
         </div>
@@ -331,7 +333,7 @@
         function loadSnapshotDates() {
             $.get('/snapshots/list', function (dates) {
                 const select = $('<select id="snapshot-date-select" class="form-select mb-3 me-2" style="width:auto; display:inline-block;"></select>');
-                select.append('<option disabled selected>Choose snapshot date</option>');
+                select.append('<option disabled selected>{{ __('messages.choose_snapshot_date') }}</option>');
 
                 dates.forEach(item => {
                     select.append(`<option value="${item.snapshot_date}">${item.snapshot_date}</option>`);
