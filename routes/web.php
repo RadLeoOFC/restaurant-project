@@ -8,6 +8,7 @@ use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\TranslationController;
+use App\Http\Controllers\ExternalDeskController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\App;
 use App\Http\Middleware\RoleMiddleware;
@@ -35,6 +36,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/desks/map', [DeskController::class, 'map'])->name('desks.map');
     Route::get('/desks/snapshot', [DeskController::class, 'saveSnapshot'])->name('desks.snapshot');
     Route::resource('desks', DeskController::class);
+    Route::resource('external-desks', ExternalDeskController::class);
 
     Route::get('/snapshots/list', [SnapshotController::class, 'list']);
     Route::post('/snapshots/load', [SnapshotController::class, 'load']);

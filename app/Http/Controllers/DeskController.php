@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Desk;
+use App\Models\ExternalDesk;
 use App\Models\DeskSnapshot;
 use Illuminate\Http\Request;
 
@@ -20,7 +21,9 @@ class DeskController extends Controller
     public function map()
     {
         $desks = Desk::all();
-        return view('desks.map', compact('desks'));
+        $externalDesks = ExternalDesk::all();
+    
+        return view('desks.map', compact('desks', 'externalDesks'));
     }
 
 

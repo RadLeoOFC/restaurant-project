@@ -126,4 +126,13 @@ return [
     'status_available' => 'Available',
     'status_occupied' => 'Occupied',
     'status_selected' => 'Selected',
+
+
+    'external_desks' => 'External desks',
+    'add_external_desk' => 'Add external desk',
+    'edit_external_desk' => 'Edit external desk',
+    'create_external_desk' => 'Create external desk',
+    'external_desk_saved' => 'External desk created successfully.',
+    'external_desk_updated' => 'External desk updated successfully.',
+    'external_desk_deleted' => 'External desk deleted successfully.',
 ];

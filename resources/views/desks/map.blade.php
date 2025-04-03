@@ -37,6 +37,25 @@
                         {{ preg_replace('/[^0-9]/', '', $desk->name) }}
                     </div>
                 @endforeach
+
+
+                @foreach($externalDesks as $desk)
+                    @php
+                        $scale = ceil($desk->capacity / 2);
+                        $unitSize = 52;
+                        $deskWidth = $unitSize * $scale;
+                        $left = $desk->coordinates_x * 10 - ($deskWidth / 2);
+                        $top = $desk->coordinates_y * 10;
+                    @endphp
+                    <div class="desk external-desk {{ $desk->status }}"
+                        data-id="{{ $desk->id }}"
+                        data-name="{{ $desk->name }}"
+                        data-capacity="{{ $desk->capacity }}"
+                        data-status="{{ $desk->status }}"
+                        style="width: {{ $deskWidth }}px; left: {{ $left }}px; top: {{ $top }}px;">
+                        {{ preg_replace('/[^0-9]/', '', $desk->name) }}
+                    </div>
+                @endforeach
             </div>
         </div>
     </div>
@@ -131,6 +150,17 @@
             z-index: 100;
         }
 
+        .external-desk {
+            background-color: #2196F3 !important; /* синий */
+            border: 6px dashed white;
+            cursor: default !important;
+        }
+
+        /* Сохраняем основной синий, но добавляем цветную рамку по статусу */
+        .external-desk.available { border-color: #4CAF50 !important; }
+        .external-desk.occupied { border-color: #F44336 !important; }
+        .external-desk.selected { border-color: #FF9800 !important; }
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
@@ -205,7 +235,7 @@
             }
         });
 
-        interact('.desk').draggable({
+        interact('.desk:not(.external-desk)').draggable({
             listeners: {
                 start(event) {
                     isDraggingDesk = true;
@@ -270,7 +300,7 @@
 
 
 
-        document.querySelectorAll('.desk').forEach(desk => {
+        document.querySelectorAll('.desk:not(.external-desk)').forEach(desk => {
             desk.addEventListener('click', () => {
                 const id = desk.dataset.id;
                 const name = desk.dataset.name;

@@ -114,4 +114,13 @@ return [
     'confirm' => 'Bestätigen',
     'forgot_password_text' => 'Passwort vergessen? Kein Problem. Geben Sie einfach Ihre E-Mail-Adresse ein, und wir senden Ihnen einen Link zum Zurücksetzen des Passworts.',
     'send_reset_link' => 'Link zum Zurücksetzen senden',
+
+
+    'external_desks' => 'Externe Tische',
+    'add_external_desk' => 'Externen Tisch hinzufügen',
+    'edit_external_desk' => 'Externen Tisch bearbeiten',
+    'create_external_desk' => 'Externen Tisch erstellen',
+    'external_desk_saved' => 'Externer Tisch erfolgreich erstellt.',
+    'external_desk_updated' => 'Externer Tisch erfolgreich aktualisiert.',
+    'external_desk_deleted' => 'Externer Tisch erfolgreich gelöscht.',
 ];
