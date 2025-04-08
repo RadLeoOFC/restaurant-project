@@ -69,8 +69,8 @@ return [
     'no_reservations' => 'Keine Reservierungen gefunden.',
 
     // Home
-    'welcome_title' => 'Willkommen im Restaurantverwaltungssystem!',
-    'welcome_description' => 'Verwalten Sie Reservierungen, Tische und mehr ganz einfach.',
+    'welcome_admin_title' => 'Willkommen im Restaurant Verwaltungssystem!',
+    'welcome_admin_description' => 'Verwalten Sie Reservierungen, Tische und mehr ganz einfach.',
     'go_to_dashboard' => 'Zum Dashboard',
     'register' => 'Registrieren',
     'login' => 'Anmelden',
@@ -84,6 +84,8 @@ return [
 
     // Notification Templates
     'notification_templates' => 'Benachrichtigungsvorlagen',
+    'create_notification_template' => 'Benachrichtigungsvorlage erstellen',
+    'edit_notification_template' => 'Benachrichtigungsvorlage bearbeiten',
     'add_template' => 'Vorlage hinzufügen',
     'template_key' => 'Vorlagenschlüssel',
     'language_code' => 'Sprachcode (z. B. en, ru)',
@@ -123,4 +125,78 @@ return [
     'external_desk_saved' => 'Externer Tisch erfolgreich erstellt.',
     'external_desk_updated' => 'Externer Tisch erfolgreich aktualisiert.',
     'external_desk_deleted' => 'Externer Tisch erfolgreich gelöscht.',
+
+
+    'dashboard_title_admin' => 'Admin-Dashboard',
+    'dashboard_title_user' => 'Mein Dashboard',
+
+    'manage_desks_admin' => 'Tische verwalten',
+    'manage_desks_user' => 'Tische',
+
+    'manage_reservations_admin' => 'Reservierungen verwalten',
+    'manage_reservations_user' => 'Reservierungen',
+
+    'manage_customers_admin' => 'Kunden verwalten',
+    'manage_customers_user' => 'Kunden',
+
+    'reports' => 'Berichte',
+    'report_templates' => 'Berichtsvorlagen',
+    'translations' => 'Übersetzungen',
+
+
+    'welcome_user_title' => 'Willkommen in unserem Restaurant!',
+    'welcome_user_description' => 'Reservieren Sie Ihren Tisch online mit nur wenigen Klicks und genießen Sie ein perfektes Dinner.',
+    'go_to_user_dashboard' => 'Zu meinem Dashboard',
+
+
+
+    'reservation_analytics' => 'Reservierungsanalyse',
+    'select_period' => 'Zeitraum auswählen',
+    'daily' => 'Täglich',
+    'weekly' => 'Wöchentlich',
+    'monthly' => 'Monatlich',
+    'yearly' => 'Jährlich',
+    'number_of_reservations' => 'Anzahl der Reservierungen',
+    'date' => 'Datum',
+
+    'report_templates' => 'Berichtsvorlagen',
+    'create_new_template' => 'Neue Vorlage erstellen',
+    'template_name' => 'Vorlagenname',
+    'filters' => 'Filter',
+    'created_at' => 'Erstellt am',
+    'actions' => 'Aktionen',
+    'edit' => 'Bearbeiten',
+    'delete' => 'Löschen',
+    'delete_confirm' => 'Diese Vorlage löschen?',
+    'no_templates_found' => 'Keine Vorlagen gefunden.',
+    'add_report_template' => 'Berichtsvorlage hinzufügen',
+    'filters_json_hint' => 'Filter (JSON-Format)',
+    'back_to_list' => 'Zurück zur Liste',
+
+    'create' => 'Erstellen',
+    'update' => 'Aktualisieren',
+    'add_translation' => 'Übersetzung hinzufügen',
+    'language' => 'Sprache',
+    'key' => 'Schlüssel',
+    'value' => 'Wert',
+    'back' => 'Zurück',
+
+
+
+    'add_translation' => 'Übersetzung hinzufügen',
+    'edit_translation' => 'Übersetzung bearbeiten',
+    'language' => 'Sprache',
+    'key' => 'Schlüssel',
+    'value' => 'Wert',
+    'report_templates' => 'Berichtsvorlagen',
+    'create_template' => 'Neue Vorlage erstellen',
+    'edit_report_template' => 'Berichtsvorlage bearbeiten',
+    'template_name' => 'Vorlagenname',
+    'filters' => 'Filter',
+    'filters_json' => 'Filter (im JSON-Format)',
+    'created_at' => 'Erstellt am',
+    'no_templates_found' => 'Keine Vorlagen gefunden.',
+    'input_error' => 'Es gab einige Probleme mit Ihren Eingaben:',
+
+
 ];

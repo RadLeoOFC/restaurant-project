@@ -75,8 +75,8 @@ return [
     'no_reservations' => 'Бронирования не найдены.',
 
     // Home
-    'welcome_title' => 'Добро пожаловать в систему управления рестораном!',
-    'welcome_description' => 'Управляйте бронированиями, столами и многим другим с легкостью.',
+    'welcome_admin_title' => 'Добро пожаловать в систему управления рестораном!',
+    'welcome_admin_description' => 'Управляйте бронированиями, столами и многим другим с легкостью.',
     'go_to_dashboard' => 'Перейти на панель',
     'register' => 'Регистрация',
     'login' => 'Войти',
@@ -90,6 +90,8 @@ return [
 
     // Notification Templates
     'notification_templates' => 'Шаблоны уведомлений',
+    'create_notification_template' => 'Создать шаблон уведомления',
+    'edit_notification_template' => 'Редактировать шаблон уведомления',
     'add_template' => 'Добавить шаблон',
     'template_key' => 'Ключ шаблона',
     'language_code' => 'Код языка (например, en, ru)',
@@ -131,5 +133,75 @@ return [
     'external_desk_saved' => 'Внешний стол успешно создан.',
     'external_desk_updated' => 'Внешний стол успешно обновлён.',
     'external_desk_deleted' => 'Внешний стол успешно удалён.',
+
+
+    'dashboard_title_admin' => 'Панель администратора',
+    'dashboard_title_user' => 'Моя панель',
+
+    'manage_desks_admin' => 'Управление столами',
+    'manage_desks_user' => 'Столы',
+
+    'manage_reservations_admin' => 'Управление бронированиями',
+    'manage_reservations_user' => 'Бронирования',
+
+    'manage_customers_admin' => 'Управление клиентами',
+    'manage_customers_user' => 'Клиенты',
+
+    'reports' => 'Отчёты',
+    'report_templates' => 'Шаблоны отчётов',
+    'translations' => 'Переводы',
+
+
+    'welcome_user_title' => 'Добро пожаловать в наш ресторан!',
+    'welcome_user_description' => 'Бронируйте столик онлайн в несколько кликов и наслаждайтесь идеальным ужином.',
+    'go_to_user_dashboard' => 'Перейти в мою панель',
+
+
+    'reservation_analytics' => 'Аналитика бронирований',
+    'select_period' => 'Выбрать период',
+    'daily' => 'По дням',
+    'weekly' => 'По неделям',
+    'monthly' => 'По месяцам',
+    'yearly' => 'По годам',
+    'number_of_reservations' => 'Количество бронирований',
+    'date' => 'Дата',
+
+    'report_templates' => 'Шаблоны отчётов',
+    'create_new_template' => 'Создать новый шаблон',
+    'template_name' => 'Название шаблона',
+    'filters' => 'Фильтры',
+    'created_at' => 'Дата создания',
+    'actions' => 'Действия',
+    'edit' => 'Редактировать',
+    'delete' => 'Удалить',
+    'delete_confirm' => 'Удалить этот шаблон?',
+    'no_templates_found' => 'Шаблоны не найдены.',
+    'add_report_template' => 'Добавить шаблон отчёта',
+    'filters_json_hint' => 'Фильтры (в формате JSON)',
+    'back_to_list' => 'Назад к списку',
+
+    'create' => 'Создать',
+    'update' => 'Обновить',
+    'add_translation' => 'Добавить перевод',
+    'language' => 'Язык',
+    'key' => 'Ключ',
+    'value' => 'Значение',
+    'back' => 'Назад',
+
+
+    'add_translation' => 'Добавить перевод',
+    'edit_translation' => 'Редактировать перевод',
+    'language' => 'Язык',
+    'key' => 'Ключ',
+    'value' => 'Значение',
+    'report_templates' => 'Шаблоны отчётов',
+    'create_template' => 'Создать шаблон',
+    'edit_report_template' => 'Редактировать шаблон',
+    'template_name' => 'Название шаблона',
+    'filters' => 'Фильтры',
+    'filters_json' => 'Фильтры (в формате JSON)',
+    'created_at' => 'Создано',
+    'no_templates_found' => 'Шаблоны не найдены.',
+    'input_error' => 'Обнаружены ошибки ввода:',
 
 ];

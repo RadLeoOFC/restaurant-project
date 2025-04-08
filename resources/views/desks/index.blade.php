@@ -6,7 +6,10 @@
 <div class="container mt-4">
     <h1 style="font-size: 30px; margin-bottom:20px">{{ __('messages.desk_list') }}</h1>
 
-    <a href="{{ route('desks.create') }}" class="btn btn-primary mb-3">{{ __('messages.add_desk') }}</a>
+    @if(auth()->user()->hasRole('Admin'))
+        <a href="{{ route('desks.create') }}" class="btn btn-primary mb-3">{{ __('messages.add_desk') }}</a>
+    @endif
+
     <a href="{{ route('desks.map') }}" class="btn btn-secondary mb-3">{{ __('messages.view_map') }}</a>
 
     @if(session('success'))

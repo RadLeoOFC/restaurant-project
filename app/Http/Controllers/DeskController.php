@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Desk;
 use App\Models\ExternalDesk;
 use App\Models\DeskSnapshot;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class DeskController extends Controller
@@ -32,14 +33,18 @@ class DeskController extends Controller
      */
     public function create()
     {
+        if (!Auth::user()->hasRole('Admin')) {
+            abort(403);
+        }
         return view('desks.create');
     }
-
-    /**
-     * Store a newly created resource in storage.
-     */
+    
     public function store(Request $request)
     {
+        if (!Auth::user()->hasRole('Admin')) {
+            abort(403);
+        }
+    
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'capacity' => 'required|integer|min:1',
@@ -47,9 +52,9 @@ class DeskController extends Controller
             'coordinates_x' => 'required|integer',
             'coordinates_y' => 'required|integer',
         ]);
-
+    
         Desk::create($validated);
-
+    
         return redirect()->route('desks.index')->with('success', 'Desk added successfully.');
     }
 
@@ -66,6 +71,10 @@ class DeskController extends Controller
      */
     public function edit(Desk $desk)
     {
+        if (!Auth::user()->hasRole('Admin')) {
+            abort(403);
+        }
+
         return view('desks.edit', compact('desk'));
     }
 
@@ -74,6 +83,10 @@ class DeskController extends Controller
      */
     public function update(Request $request, Desk $desk)
     {
+        if (!Auth::user()->hasRole('Admin')) {
+            abort(403);
+        }
+
         $validated = $request->validate([
             'name' => 'sometimes|string|max:255',
             'capacity' => 'sometimes|integer|min:1',
@@ -98,6 +111,10 @@ class DeskController extends Controller
      */
     public function destroy(Request $request, Desk $desk)
     {
+        if (!Auth::user()->hasRole('Admin')) {
+            abort(403);
+        }
+
         $desk->delete();
     
         if ($request->ajax()) {
@@ -109,6 +126,10 @@ class DeskController extends Controller
     
     public function saveSnapshot()
     {
+        if (!Auth::user()->hasRole('Admin')) {
+            abort(403);
+        }
+        
         $date = now()->toDateString();
     
         // Delete existing snapshots for today (to avoid duplicates)

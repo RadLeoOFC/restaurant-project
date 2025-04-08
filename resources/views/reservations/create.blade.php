@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container mt-4">
-        <h2 class="mb-4" style="font-size: 30px; margin-bottom:20px">{{ __('messages.create_reservation') }}</h2>
+        <h2 class="mb-4" style="font-size: 30px; margin-bottom:20px">{{ __('messages.add_reservation') }}</h2>
 
         @if ($errors->any())
             <div class="alert alert-danger">

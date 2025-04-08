@@ -9,6 +9,8 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\TranslationController;
 use App\Http\Controllers\ExternalDeskController;
+use App\Http\Controllers\ReportTemplateController;
+use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\App;
 use App\Http\Middleware\RoleMiddleware;
@@ -30,8 +32,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
-
-    Route::resource('translations', TranslationController::class);
     
     Route::get('/desks/map', [DeskController::class, 'map'])->name('desks.map');
     Route::get('/desks/snapshot', [DeskController::class, 'saveSnapshot'])->name('desks.snapshot');
@@ -44,10 +44,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::resource('reservations', ReservationController::class);
     Route::resource('customers', CustomerController::class);
-
-    Route::resource('notification-templates', \App\Http\Controllers\NotificationTemplateController::class);
-
-    Route::resource('languages', LanguageController::class);   
 
     Route::get('/test-locale', function () {
         return view('test-locale');
@@ -62,6 +58,16 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth', RoleMiddleware::class . ':Admin'])->group(function () {
     Route::resource('roles', \App\Http\Controllers\RoleController::class);
+    Route::resource('notification-templates', \App\Http\Controllers\NotificationTemplateController::class);
+
+    Route::resource('languages', LanguageController::class); 
+    
+    Route::resource('translations', TranslationController::class);
+
+    Route::resource('report-templates', ReportTemplateController::class)->middleware('auth');
+    Route::get('/reports/{type}', [ReportController::class, 'generate'])->name('reports.generate');
+    Route::get('/api/chart-data', [ReportController::class, 'chartData'])->name('reports.chart.data');
+
 });
 
 require __DIR__.'/auth.php';

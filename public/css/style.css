@@ -19,10 +19,7 @@ nav {
     right: 0;
 }
 
-/* Content container */
-.container {
-    margin-top: 80px; /* Prevent content from being overlapped by the menu */
-}
+
 
 /* Styles for buttons */
 .btn {

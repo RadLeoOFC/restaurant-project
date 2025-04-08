@@ -75,8 +75,8 @@ return [
     'no_reservations' => 'No reservations found.',
 
     // Home
-    'welcome_title' => 'Welcome to the restaurant management system!',
-    'welcome_description' => 'Manage reservations, desks, and more with ease.',
+    'welcome_admin_title' => 'Welcome to the restaurant management system!',
+    'welcome_admin_description' => 'Manage reservations, desks, and more with ease.',
     'go_to_dashboard' => 'Go to Dashboard',
     'register' => 'Register',
     'login' => 'Login',
@@ -90,6 +90,8 @@ return [
 
     // Notification Templates
     'notification_templates' => 'Notification Templates',
+    'create_notification_template' => 'Create Notification Template',
+    'edit_notification_template' => 'Edit Notification Template',
     'add_template' => 'Add Template',
     'template_key' => 'Template Key',
     'language_code' => 'Language Code (e.g. en, ru)',
@@ -135,4 +137,80 @@ return [
     'external_desk_saved' => 'External desk created successfully.',
     'external_desk_updated' => 'External desk updated successfully.',
     'external_desk_deleted' => 'External desk deleted successfully.',
+
+
+    'dashboard_title_admin' => 'Admin Dashboard',
+    'dashboard_title_user' => 'My Dashboard',
+
+    'manage_desks_admin' => 'Manage Desks',
+    'manage_desks_user' => 'Desks',
+
+    'manage_reservations_admin' => 'Manage Reservations',
+    'manage_reservations_user' => 'Reservations',
+
+    'manage_customers_admin' => 'Manage Customers',
+    'manage_customers_user' => 'Customers',
+
+    'reports' => 'Reports',
+    'report_templates' => 'Report Templates',
+    'translations' => 'Translations',
+
+
+
+    'welcome_user_title' => 'Welcome to our restaurant!',
+    'welcome_user_description' => 'Reserve your table online with just a few clicks and enjoy a perfect dining experience.',
+    'go_to_user_dashboard' => 'Go to My Dashboard',
+
+
+    'reservation_analytics' => 'Reservation Analytics',
+    'select_period' => 'Select Period',
+    'daily' => 'Daily',
+    'weekly' => 'Weekly',
+    'monthly' => 'Monthly',
+    'yearly' => 'Yearly',
+    'number_of_reservations' => 'Number of Reservations',
+    'date' => 'Date',
+
+    'report_templates' => 'Report Templates',
+    'create_new_template' => 'Create New Template',
+    'template_name' => 'Template Name',
+    'filters' => 'Filters',
+    'created_at' => 'Created At',
+    'actions' => 'Actions',
+    'edit' => 'Edit',
+    'delete' => 'Delete',
+    'delete_confirm' => 'Delete this template?',
+    'no_templates_found' => 'No templates found.',
+    'add_report_template' => 'Add Report Template',
+    'filters_json_hint' => 'Filters (JSON format)',
+    'back_to_list' => 'Back to List',
+
+    'create' => 'Create',
+    'update' => 'Update',
+    'add_translation' => 'Add Translation',
+    'language' => 'Language',
+    'key' => 'Key',
+    'value' => 'Value',
+    'back' => 'Back',
+
+
+    // General / Translations
+    'add_translation' => 'Add Translation',
+    'edit_translation' => 'Edit Translation',
+    'language' => 'Language',
+    'key' => 'Key',
+    'value' => 'Value',
+
+    // Report Templates
+    'report_templates' => 'Report Templates',
+    'create_template' => 'Create New Template',
+    'edit_report_template' => 'Edit Report Template',
+    'template_name' => 'Template Name',
+    'filters' => 'Filters',
+    'filters_json' => 'Filters (JSON format)',
+    'created_at' => 'Created At',
+    'no_templates_found' => 'No templates found.',
+    'input_error' => 'There were some problems with your input:',
+
+
 ];

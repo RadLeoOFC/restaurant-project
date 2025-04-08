@@ -74,8 +74,8 @@ return [
     'no_reservations' => 'Няма намерени резервации.',
 
     // Home
-    'welcome_title' => 'Добре дошли в системата за управление на ресторанта!',
-    'welcome_description' => 'Управлявайте резервации, бюра и още с лекота.',
+    'welcome_admin_title' => 'Добре дошли в системата за управление на ресторанта!',
+    'welcome_admin_description' => 'Управлявайте резервации, бюра и още с лекота.',
     'go_to_dashboard' => 'Към таблото',
     'register' => 'Регистрация',
     'login' => 'Вход',
@@ -89,6 +89,8 @@ return [
 
     // Notification Templates
     'notification_templates' => 'Шаблони за известия',
+    'create_notification_template' => 'Създай шаблон за известие',
+    'edit_notification_template' => 'Редактирай шаблон за известие',
     'add_template' => 'Добави шаблон',
     'template_key' => 'Ключ на шаблон',
     'language_code' => 'Код на езика (напр. en, ru)',
@@ -130,5 +132,78 @@ return [
     'external_desk_saved' => 'Външното бюро е създадено успешно.',
     'external_desk_updated' => 'Външното бюро е обновено успешно.',
     'external_desk_deleted' => 'Външното бюро е изтрито успешно.',
+
+
+    'dashboard_title_admin' => 'Табло на админа',
+    'dashboard_title_user' => 'Моето табло',
+
+    'manage_desks_admin' => 'Управление на бюра',
+    'manage_desks_user' => 'Бюра',
+
+    'manage_reservations_admin' => 'Управление на резервации',
+    'manage_reservations_user' => 'Резервации',
+
+    'manage_customers_admin' => 'Управление на клиенти',
+    'manage_customers_user' => 'Клиенти',
+
+    'reports' => 'Отчети',
+    'report_templates' => 'Шаблони за отчети',
+    'translations' => 'Преводи',
+
+
+    'welcome_user_title' => 'Добре дошли в нашия ресторант!',
+    'welcome_user_description' => 'Резервирайте маса онлайн само с няколко клика и се насладете на перфектна вечеря.',
+    'go_to_user_dashboard' => 'Към моето табло',
+
+
+
+    'reservation_analytics' => 'Анализ на резервации',
+    'select_period' => 'Избери период',
+    'daily' => 'Дневен',
+    'weekly' => 'Седмичен',
+    'monthly' => 'Месечен',
+    'yearly' => 'Годишен',
+    'number_of_reservations' => 'Брой резервации',
+    'date' => 'Дата',
+
+    'report_templates' => 'Шаблони за отчети',
+    'create_new_template' => 'Създай нов шаблон',
+    'template_name' => 'Име на шаблона',
+    'filters' => 'Филтри',
+    'created_at' => 'Създаден на',
+    'actions' => 'Действия',
+    'edit' => 'Редактирай',
+    'delete' => 'Изтрий',
+    'delete_confirm' => 'Изтриване на този шаблон?',
+    'no_templates_found' => 'Няма намерени шаблони.',
+    'add_report_template' => 'Добави шаблон за отчет',
+    'filters_json_hint' => 'Филтри (JSON формат)',
+    'back_to_list' => 'Назад към списъка',
+
+    'create' => 'Създай',
+    'update' => 'Актуализирай',
+    'add_translation' => 'Добави превод',
+    'language' => 'Език',
+    'key' => 'Ключ',
+    'value' => 'Стойност',
+    'back' => 'Назад',
+
+
+
+    'add_translation' => 'Добави превод',
+    'edit_translation' => 'Редактирай превод',
+    'language' => 'Език',
+    'key' => 'Ключ',
+    'value' => 'Стойност',
+    'report_templates' => 'Шаблони за отчети',
+    'create_template' => 'Създай шаблон',
+    'edit_report_template' => 'Редактирай шаблон',
+    'template_name' => 'Име на шаблон',
+    'filters' => 'Филтри',
+    'filters_json' => 'Филтри (в JSON формат)',
+    'created_at' => 'Създадено на',
+    'no_templates_found' => 'Няма намерени шаблони.',
+    'input_error' => 'Има проблеми с въведената информация:',
+
 
 ];

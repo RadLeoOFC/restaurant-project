@@ -6,10 +6,13 @@
 <div class="container mt-4">
     <h1 style="font-size: 30px; margin-bottom:20px">{{ __('messages.desk_layout') }}</h1>
 
-    <a href="{{ route('desks.create') }}" class="btn btn-primary mb-3">{{ __('messages.add_desk') }}</a>
     <a href="{{ route('desks.index') }}" class="btn btn-secondary mb-3">{{ __('messages.back_to_list') }}</a>
-    <a href="{{ route('desks.snapshot') }}" class="btn btn-warning mb-3">{{ __('messages.save_snapshot') }}</a>
-    <a href="javascript:void(0);" onclick="resetToTodaySnapshot()" class="btn btn-danger mb-3 ms-2">{{ __('messages.reset_map') }}</a>
+    @if(auth()->user()->hasRole('Admin'))
+        <a href="{{ route('desks.create') }}" class="btn btn-primary mb-3">{{ __('messages.add_desk') }}</a>
+        <a href="{{ route('desks.snapshot') }}" class="btn btn-warning mb-3">{{ __('messages.save_snapshot') }}</a>
+        <a href="javascript:void(0);" onclick="resetToTodaySnapshot()" class="btn btn-danger mb-3 ms-2">{{ __('messages.reset_map') }}</a>
+    @endif
+
 
     <!-- остальная часть остаётся без изменений -->
 
@@ -193,6 +196,8 @@
 
 
     document.addEventListener('DOMContentLoaded', () => {
+        const isAdmin = @json(auth()->user()->hasRole('Admin'));
+
         let scale = 1, panX = 0, panY = 0;
         const wrapper = document.getElementById('zoom-wrapper');
         const mapContainer = document.getElementById('desk-map-container');
@@ -235,93 +240,94 @@
             }
         });
 
-        interact('.desk:not(.external-desk)').draggable({
-            listeners: {
-                start(event) {
-                    isDraggingDesk = true;
-                    wrapper.style.pointerEvents = 'none';
+        if (isAdmin) {
+            interact('.desk:not(.external-desk)').draggable({
+                listeners: {
+                    start(event) {
+                        isDraggingDesk = true;
+                        wrapper.style.pointerEvents = 'none';
 
-                    // Сохраняем изначальные координаты
-                    const target = event.target;
-                    target.dataset.originalLeft = target.style.left;
-                    target.dataset.originalTop = target.style.top;
-                },
-                move(event) {
-                    const target = event.target;
-                    const dx = event.dx / scale;
-                    const dy = event.dy / scale;
+                        const target = event.target;
+                        target.dataset.originalLeft = target.style.left;
+                        target.dataset.originalTop = target.style.top;
+                    },
+                    move(event) {
+                        const target = event.target;
+                        const dx = event.dx / scale;
+                        const dy = event.dy / scale;
 
-                    const currentLeft = parseFloat(target.style.left) || 0;
-                    const currentTop = parseFloat(target.style.top) || 0;
+                        const currentLeft = parseFloat(target.style.left) || 0;
+                        const currentTop = parseFloat(target.style.top) || 0;
 
-                    const newLeft = currentLeft + dx;
-                    const newTop = currentTop + dy;
+                        target.style.left = `${currentLeft + dx}px`;
+                        target.style.top = `${currentTop + dy}px`;
+                    },
+                    end(event) {
+                        isDraggingDesk = false;
+                        wrapper.style.pointerEvents = 'auto';
 
-                    target.style.left = `${newLeft}px`;
-                    target.style.top = `${newTop}px`;
-                },
-                end(event) {
-                    isDraggingDesk = false;
-                    wrapper.style.pointerEvents = 'auto';
+                        const target = event.target;
+                        const id = target.dataset.id;
+                        const capacity = parseInt(target.dataset.capacity) || 1;
+                        const deskWidth = 52 * Math.ceil(capacity / 2);
+                        const left = parseFloat(target.style.left);
+                        const top = parseFloat(target.style.top);
 
-                    const target = event.target;
-                    const id = target.dataset.id;
-                    const capacity = parseInt(target.dataset.capacity) || 1;
-                    const deskWidth = 52 * Math.ceil(capacity / 2);
+                        const coordX = Math.round((left + deskWidth / 2) / 10);
+                        const coordY = Math.round(top / 10);
 
-                    const left = parseFloat(target.style.left);
-                    const top = parseFloat(target.style.top);
-
-                    const coordX = Math.round((left + deskWidth / 2) / 10);
-                    const coordY = Math.round(top / 10);
-
-                    if (confirm("Save new desk position?")) {
-                        $.ajax({
-                            url: `/desks/${id}`,
-                            type: 'PUT',
-                            data: {
-                                _token: "{{ csrf_token() }}",
-                                coordinates_x: coordX,
-                                coordinates_y: coordY
-                            },
-                            success: res => {
-                                if (!res.success) alert("Failed to save desk.");
-                            },
-                            error: () => alert("Error saving desk.")
-                        });
-                    } else {
-                        // Return to original position
-                        target.style.left = target.dataset.originalLeft;
-                        target.style.top = target.dataset.originalTop;
+                        if (confirm("Save new desk position?")) {
+                            $.ajax({
+                                url: `/desks/${id}`,
+                                type: 'PUT',
+                                data: {
+                                    _token: "{{ csrf_token() }}",
+                                    coordinates_x: coordX,
+                                    coordinates_y: coordY
+                                },
+                                success: res => {
+                                    if (!res.success) alert("Failed to save desk.");
+                                },
+                                error: () => alert("Error saving desk.")
+                            });
+                        } else {
+                            target.style.left = target.dataset.originalLeft;
+                            target.style.top = target.dataset.originalTop;
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
 
 
 
         document.querySelectorAll('.desk:not(.external-desk)').forEach(desk => {
             desk.addEventListener('click', () => {
                 const id = desk.dataset.id;
-                const name = desk.dataset.name;
-                const capacity = desk.dataset.capacity;
-                const status = desk.dataset.status;
 
-                const left = parseFloat(desk.style.left) || 0;
-                const top = parseFloat(desk.style.top) || 0;
-                const width = 52 * Math.ceil(capacity / 2);
-                const coordX = Math.round((left + width / 2) / 10);
-                const coordY = Math.round(top / 10);
+                if (isAdmin) {
+                    const name = desk.dataset.name;
+                    const capacity = desk.dataset.capacity;
+                    const status = desk.dataset.status;
+                    const left = parseFloat(desk.style.left) || 0;
+                    const top = parseFloat(desk.style.top) || 0;
+                    const width = 52 * Math.ceil(capacity / 2);
+                    const coordX = Math.round((left + width / 2) / 10);
+                    const coordY = Math.round(top / 10);
 
-                $('#edit-desk-id').val(id);
-                $('#edit-desk-name').val(name);
-                $('#edit-desk-capacity').val(capacity);
-                $('#edit-desk-status').val(status);
-                $('#edit-desk-coordinates-x').val(coordX);
-                $('#edit-desk-coordinates-y').val(coordY);
+                    $('#edit-desk-id').val(id);
+                    $('#edit-desk-name').val(name);
+                    $('#edit-desk-capacity').val(capacity);
+                    $('#edit-desk-status').val(status);
+                    $('#edit-desk-coordinates-x').val(coordX);
+                    $('#edit-desk-coordinates-y').val(coordY);
 
-                new bootstrap.Modal(document.getElementById('edit-desk-modal')).show();
+                    new bootstrap.Modal(document.getElementById('edit-desk-modal')).show();
+                } else {
+                    window.location.href = `/reservations/create?desk_id=${id}`;
+                }
             });
+
         });
 
         $('#edit-desk-form').on('submit', function (e) {

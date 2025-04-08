@@ -1,6 +1,12 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="{{ route('dashboard') }}">{{ __('messages.admin_panel') }}</a>
+    @php
+        $isAdmin = auth()->check() && optional(auth()->user()->role)->role_name === 'Admin';
+    @endphp
+
+    <div class="container-fluid"> <!-- <=== ЭТО container-fluid вместо container -->
+        <a class="navbar-brand" href="{{ route('dashboard') }}">
+            {{ $isAdmin ? __('messages.dashboard_title_admin') : __('messages.dashboard_title_user') }}
+        </a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>

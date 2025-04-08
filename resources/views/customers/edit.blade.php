@@ -34,12 +34,19 @@
         </div>
 
         <div class="mb-3">
-            <label for="preferred_language" class="form-label d-block text-start">{{ __('messages.preferred_language') }}</label>
-            <input type="text" name="preferred_language" class="form-control" value="{{ $customer->preferred_language }}">
+            <select name="preferred_language" class="form-control">
+                @foreach(\App\Models\Language::all() as $lang)
+                    <option value="{{ $lang->code }}" {{ $customer->preferred_language === $lang->code ? 'selected' : '' }}>
+                        {{ $lang->name }}
+                    </option>
+                @endforeach
+            </select>
         </div>
 
-        <a href="{{ route('customers.index') }}" class="btn btn-secondary">{{ __('messages.back') }}</a>
-        <button type="submit" class="btn btn-success">{{ __('messages.update') }}</button>
+        <div>
+            <a href="{{ route('customers.index') }}" class="btn btn-secondary">{{ __('messages.back') }}</a>
+            <button type="submit" class="btn btn-success">{{ __('messages.update') }}</button>
+        </div>
     </form>
 </div>
 @endsection

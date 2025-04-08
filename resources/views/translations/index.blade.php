@@ -2,8 +2,8 @@
 
 @section('content')
 <div class="container">
-    <h1 style="font-size: 30px; margin-bottom:20px">Translations</h1>
-    <a href="{{ route('translations.create') }}" class="btn btn-primary mb-3">Add Translation</a>
+    <h1 style="font-size: 30px; margin-bottom:20px">{{ __('messages.translations') }}</h1>
+    <a href="{{ route('translations.create') }}" class="btn btn-primary mb-3">{{ __('messages.add_translation') }}</a>
 
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
@@ -12,10 +12,10 @@
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>Language</th>
-                <th>Key</th>
-                <th>Value</th>
-                <th>Actions</th>
+                <th>{{ __('messages.language') }}</th>
+                <th>{{ __('messages.key') }}</th>
+                <th>{{ __('messages.value') }}</th>
+                <th>{{ __('messages.actions') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -25,10 +25,10 @@
                     <td>{{ $translation->key }}</td>
                     <td>{{ $translation->value }}</td>
                     <td>
-                        <a href="{{ route('translations.edit', $translation) }}" class="btn btn-warning btn-sm">Edit</a>
+                        <a href="{{ route('translations.edit', $translation) }}" class="btn btn-warning btn-sm">{{ __('messages.edit') }}</a>
                         <form action="{{ route('translations.destroy', $translation) }}" method="POST" style="display:inline-block;">
                             @csrf @method('DELETE')
-                            <button class="btn btn-danger btn-sm">Delete</button>
+                            <button class="btn btn-danger btn-sm">{{ __('messages.delete') }}</button>
                         </form>
                     </td>
                 </tr>
