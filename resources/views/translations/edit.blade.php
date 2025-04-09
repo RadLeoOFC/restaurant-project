@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', __('messages.edit_translation'))
+
 @section('content')
 <div class="container">
     <h1 style="font-size: 30px; margin-bottom:20px">{{ __('messages.edit_translation') }}</h1>

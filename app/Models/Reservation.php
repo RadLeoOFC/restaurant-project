@@ -16,6 +16,7 @@ class Reservation extends Model
         'reservation_date',
         'reservation_time',
         'status',
+        'duration_hours',
     ];
 
     // Define relationship: Reservation belongs to a Desk

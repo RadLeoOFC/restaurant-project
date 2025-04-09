@@ -37,7 +37,7 @@ class LanguageController extends Controller
     
         Language::create($request->only('code', 'name'));
     
-        return redirect()->route('languages.index')->with('success', 'Language added');
+        return redirect()->route('languages.index')->with('success', __('messages.language_added'));
     }
 
     /**
@@ -68,7 +68,7 @@ class LanguageController extends Controller
     
         $language->update($request->only('code', 'name'));
     
-        return redirect()->route('languages.index')->with('success', 'Language updated');
+        return redirect()->route('languages.index')->with('success', __('messages.language_updated'));
     }
 
     /**
@@ -77,6 +77,6 @@ class LanguageController extends Controller
     public function destroy(Language $language)
     {
         $language->delete();
-        return redirect()->route('languages.index')->with('success', 'Language deleted');
+        return redirect()->route('languages.index')->with('success', __('messages.language_deleted'));
     }
 }

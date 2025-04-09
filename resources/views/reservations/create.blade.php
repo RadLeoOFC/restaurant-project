@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', __('messages.add_reservation'))
+
 @section('content')
     <div class="container mt-4">
         <h2 class="mb-4" style="font-size: 30px; margin-bottom:20px">{{ __('messages.add_reservation') }}</h2>
@@ -28,16 +30,22 @@
                 </select>
             </div>
 
-            <div class="mb-3">
-                <label for="customer_id" class="form-label d-block text-start">{{ __('messages.customer') }}</label>
-                <select name="customer_id" id="customer_id" class="form-select" required>
-                    @foreach ($customers as $customer)
-                        <option value="{{ $customer->id }}">
-                            {{ $customer->name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+            @php $user = auth()->user(); @endphp
+
+            @if ($user->hasRole('Admin'))
+                <div class="mb-3">
+                    <label for="customer_id" class="form-label d-block text-start">{{ __('messages.customer') }}</label>
+                    <select name="customer_id" id="customer_id" class="form-select" required>
+                        @foreach ($customers as $customer)
+                            <option value="{{ $customer->id }}"
+                                @if (isset($reservation) && $reservation->customer_id == $customer->id) selected @endif>
+                                {{ $customer->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            @endif
+
 
             <div class="mb-3">
                 <label for="reservation_date" class="form-label d-block text-start">{{ __('messages.date') }}</label>
@@ -48,6 +56,18 @@
                 <label for="reservation_time" class="form-label d-block text-start">{{ __('messages.time') }}</label>
                 <input type="time" name="reservation_time" class="form-control" required>
             </div>
+
+            <div class="mb-3">
+                <label for="duration_hours" class="form-label d-block text-start">{{ __('messages.duration') }}</label>
+                <select name="duration_hours" id="duration_hours" class="form-select" required>
+                    @for ($i = 2; $i <= 8; $i++)
+                        <option value="{{ $i }}" {{ old('duration_hours', 4) == $i ? 'selected' : '' }}>
+                            {{ $i }} {{ __('messages.hours') }}
+                        </option>
+                    @endfor
+                </select>
+            </div>
+
 
             <div class="mb-3">
                 <label for="status" class="form-label d-block text-start">{{ __('messages.status') }}</label>

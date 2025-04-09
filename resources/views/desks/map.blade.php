@@ -100,6 +100,45 @@
     </div>
 </div>
 
+<!-- Reservation Modal (for Users) -->
+<div id="reservation-modal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <form action="{{ route('reservations.store') }}" method="POST" class="modal-content">
+            @csrf
+            <input type="hidden" name="desk_id" id="reservation-desk-id">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    {{ __('messages.reserve_desk') }} <span id="reservation-desk-name"></span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">{{ __('messages.date') }}</label>
+                    <input type="date" name="reservation_date" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">{{ __('messages.time') }}</label>
+                    <input type="time" name="reservation_time" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">{{ __('messages.duration') }}</label>
+                    <select name="duration_hours" class="form-select">
+                        @for ($i = 2; $i <= 8; $i++)
+                            <option value="{{ $i }}">{{ $i }} {{ __('messages.hours') }}</option>
+                        @endfor
+                    </select>
+                </div>
+                <input type="hidden" name="status" value="new">
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-success">{{ __('messages.reserve') }}</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
 <style>
     .zoom-pan-wrapper {
         width: 100%;
@@ -324,7 +363,15 @@
 
                     new bootstrap.Modal(document.getElementById('edit-desk-modal')).show();
                 } else {
-                    window.location.href = `/reservations/create?desk_id=${id}`;
+                    const name = desk.dataset.name;
+                    $('#reservation-desk-id').val(id);
+                    const number = name.replace(/[^\d]/g, '');
+                    const translatedName = `{{ __('messages.desk_number') }}` + ' №' + number;
+                    $('#reservation-desk-name').text(translatedName);
+
+
+                    // Открыть модалку
+                    new bootstrap.Modal(document.getElementById('reservation-modal')).show();
                 }
             });
 
