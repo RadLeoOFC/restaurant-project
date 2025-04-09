@@ -212,5 +212,66 @@ return [
     'no_templates_found' => 'No templates found.',
     'input_error' => 'There were some problems with your input:',
 
+    'user' => 'User',
+    'no_user_attached' => 'No user',
+    'select_user' => 'Select a user',
+    'no_user_selected' => 'No user selected',
+
+    'select_user' => 'Select a user',
+    'no_user_selected' => 'No user selected',
+    'customer_already_exists' => 'You already have a customer profile.',
+    'no_reservations_found' => 'No reservations found.',
+
+    'reservation_created' => 'Reservation created successfully.',
+    'reservation_updated' => 'Reservation updated.',
+    'reservation_deleted' => 'Reservation deleted.',
+    'desk_already_reserved' => 'This desk is already reserved at this time or within the next 4 hours.',
+
+    'customer_created' => 'Customer created.',
+    'customer_updated' => 'Customer updated.',
+    'customer_deleted' => 'Customer deleted.',
+    'customer_already_exists' => 'You already have a customer profile.',
+    'user_has_customer' => 'The selected user already has a customer.',
+
+    'reservation_created' => 'Reservation created.',
+    'reservation_updated' => 'Reservation updated.',
+    'reservation_deleted' => 'Reservation deleted.',
+    'desk_already_reserved' => 'This desk is already reserved at this time or within the next 4 hours.',
+
+    'template_created' => 'Template created.',
+    'template_updated' => 'Template updated.',
+    'template_deleted' => 'Template deleted.',
+
+    'language_added' => 'Language added.',
+    'language_updated' => 'Language updated.',
+    'language_deleted' => 'Language deleted.',
+
+    'translation_added' => 'Translation added.',
+    'translation_updated' => 'Translation updated.',
+    'translation_deleted' => 'Translation deleted.',
+
+    'role_created' => 'Role created successfully.',
+    'role_updated' => 'Role updated successfully.',
+    'role_deleted' => 'Role deleted successfully.',
+
+    'external_desk_created' => 'External desk created.',
+    'external_desk_updated' => 'External desk updated.',
+    'external_desk_deleted' => 'External desk deleted.',
+
+    'desk_added' => 'Desk added successfully.',
+    'desk_updated' => 'Desk updated successfully.',
+    'desk_deleted' => 'Desk deleted successfully.',
+
+    'layout_snapshot_saved' => 'A snapshot of the current layout has been saved.',
+
+    'access_denied' => 'Access denied.',
+    'profile_updated' => 'Profile updated.',
+    
+    'duration' => 'Duration',
+    'hours' => 'hours',
+
+    'reserve_desk' => 'Reserve ',
+    'reserve' => 'Reserve',
+
 
 ];

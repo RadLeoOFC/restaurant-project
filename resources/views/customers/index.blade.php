@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', __('messages.customer_list'))
+
 @section('content')
 <div class="container mt-4">
     <h1 style="font-size: 30px; margin-bottom:20px">{{ __('messages.customer_list') }}</h1>
@@ -16,6 +18,9 @@
                 <th>{{ __('messages.email') }}</th>
                 <th>{{ __('messages.phone') }}</th>
                 <th>{{ __('messages.preferred_language') }}</th>
+                @if (auth()->user()->hasRole('Admin'))
+                    <th>{{ __('messages.user') }}</th>
+                @endif
                 <th>{{ __('messages.actions') }}</th>
             </tr>
         </thead>
@@ -26,6 +31,15 @@
                     <td>{{ $customer->email }}</td>
                     <td>{{ $customer->phone }}</td>
                     <td>{{ $customer->preferred_language }}</td>
+                    @if (auth()->user()->hasRole('Admin'))
+                        <td>
+                            @if ($customer->user)
+                                {{ $customer->user->name }} ({{ $customer->user->email }})
+                            @else
+                                <em>{{ __('messages.no_user_attached') }}</em>
+                            @endif
+                        </td>
+                    @endif
                     <td>
                         <a href="{{ route('customers.edit', $customer) }}" class="btn btn-warning btn-sm">{{ __('messages.edit') }}</a>
                         <form action="{{ route('customers.destroy', $customer) }}" method="POST" class="d-inline">

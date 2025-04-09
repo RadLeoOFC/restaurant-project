@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', __('messages.edit_report_template'))
+
 @section('content')
 <div class="container mt-4">
     <h2 style="font-size: 30px; margin-bottom:20px">{{ __('messages.edit_report_template') }}</h2>

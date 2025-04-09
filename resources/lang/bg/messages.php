@@ -205,5 +205,66 @@ return [
     'no_templates_found' => 'Няма намерени шаблони.',
     'input_error' => 'Има проблеми с въведената информация:',
 
+    'user' => 'Потребител',
+    'no_user_attached' => 'Няма потребител',
+    'select_user' => 'Изберете потребител',
+    'no_user_selected' => 'Няма избран потребител',
+
+    'select_user' => 'Изберете потребител',
+    'no_user_selected' => 'Няма избран потребител',
+    'customer_already_exists' => 'Вече имате клиентски профил.',
+    'no_reservations_found' => 'Няма намерени резервации.',
+
+    'reservation_created' => 'Резервацията е създадена.',
+    'reservation_updated' => 'Резервацията е обновена.',
+    'reservation_deleted' => 'Резервацията е изтрита.',
+    'desk_already_reserved' => 'Тази маса вече е резервирана за това време или следващите 4 часа.',
+    
+    'customer_created' => 'Клиентът е създаден.',
+    'customer_updated' => 'Клиентът е обновен.',
+    'customer_deleted' => 'Клиентът е изтрит.',
+    'customer_already_exists' => 'Вече имате клиентски профил.',
+    'user_has_customer' => 'Избраният потребител вече има клиент.',
+
+    'reservation_created' => 'Резервацията е създадена.',
+    'reservation_updated' => 'Резервацията е обновена.',
+    'reservation_deleted' => 'Резервацията е изтрита.',
+    'desk_already_reserved' => 'Тази маса вече е резервирана за това време или следващите 4 часа.',
+
+    'template_created' => 'Шаблонът е създаден.',
+    'template_updated' => 'Шаблонът е обновен.',
+    'template_deleted' => 'Шаблонът е изтрит.',
+
+    'language_added' => 'Езикът е добавен.',
+    'language_updated' => 'Езикът е обновен.',
+    'language_deleted' => 'Езикът е изтрит.',
+
+    'translation_added' => 'Преводът е добавен.',
+    'translation_updated' => 'Преводът е обновен.',
+    'translation_deleted' => 'Преводът е изтрит.',
+
+    'role_created' => 'Ролята е създадена успешно.',
+    'role_updated' => 'Ролята е обновена успешно.',
+    'role_deleted' => 'Ролята е изтрита успешно.',
+
+    'external_desk_created' => 'Външната маса е създадена.',
+    'external_desk_updated' => 'Външната маса е обновена.',
+    'external_desk_deleted' => 'Външната маса е изтрита.',
+
+    'desk_added' => 'Масата е добавена.',
+    'desk_updated' => 'Масата е обновена.',
+    'desk_deleted' => 'Масата е изтрита.',
+
+    'layout_snapshot_saved' => 'Снимката на текущото разположение е запазена.',
+
+    'access_denied' => 'Отказан достъп.',
+    'profile_updated' => 'Профилът е обновен.', 
+
+    'duration' => 'Продължителност',
+    'hours' => 'часове',
+
+    'reserve_desk' => 'Резервирай ',
+    'reserve' => 'Резервирай',
+
 
 ];

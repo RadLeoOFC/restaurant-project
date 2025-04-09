@@ -11,12 +11,21 @@ use App\Http\Controllers\TranslationController;
 use App\Http\Controllers\ExternalDeskController;
 use App\Http\Controllers\ReportTemplateController;
 use App\Http\Controllers\ReportController;
+use App\Console\Commands\UpdateDeskStatuses;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\App;
 use App\Http\Middleware\RoleMiddleware;
 
 Route::get('/', function () {
     return view('home'); 
+});
+
+Route::get('/reservations/check-conflict', [\App\Http\Controllers\ReservationController::class, 'checkConflict'])
+    ->name('reservations.checkConflict');
+
+Route::get('/run-desk-statuses', function () {
+    Artisan::call('desks:update-statuses');
+    return 'Desk statuses updated.';
 });
 
 

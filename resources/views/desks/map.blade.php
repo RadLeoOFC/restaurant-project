@@ -100,6 +100,49 @@
     </div>
 </div>
 
+<!-- Reservation Modal (for Users) -->
+<div id="reservation-modal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <form action="{{ route('reservations.store') }}" method="POST" class="modal-content">
+            @csrf
+            <input type="hidden" name="desk_id" id="reservation-desk-id">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    {{ __('messages.reserve_desk') }} <span id="reservation-desk-name"></span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">{{ __('messages.date') }}</label>
+                    <input type="date" name="reservation_date" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">{{ __('messages.time') }}</label>
+                    <input type="time" name="reservation_time" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">{{ __('messages.duration') }}</label>
+                    <select name="duration_hours" class="form-select">
+                        @for ($i = 2; $i <= 8; $i++)
+                            <option value="{{ $i }}">{{ $i }} {{ __('messages.hours') }}</option>
+                        @endfor
+                    </select>
+                </div>
+                <input type="hidden" name="status" value="new">
+            </div>
+            <div id="reservation-warning" class="alert alert-danger d-none mt-2">
+                {{ __('messages.desk_already_reserved') }}
+            </div>
+
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-success">{{ __('messages.reserve') }}</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
 <style>
     .zoom-pan-wrapper {
         width: 100%;
@@ -324,7 +367,18 @@
 
                     new bootstrap.Modal(document.getElementById('edit-desk-modal')).show();
                 } else {
-                    window.location.href = `/reservations/create?desk_id=${id}`;
+                    // ✅ Скрываем старое предупреждение
+                    $('#reservation-warning').addClass('d-none').text('');
+                    
+                    const name = desk.dataset.name;
+                    $('#reservation-desk-id').val(id);
+                    const number = name.replace(/[^\d]/g, '');
+                    const translatedName = `{{ __('messages.desk_number') }}` + ' №' + number;
+                    $('#reservation-desk-name').text(translatedName);
+
+
+                    // Открыть модалку
+                    new bootstrap.Modal(document.getElementById('reservation-modal')).show();
                 }
             });
 
@@ -368,23 +422,32 @@
         // Load all available snapshot dates and populate dropdown
         function loadSnapshotDates() {
             $.get('/snapshots/list', function (dates) {
+                // Удалить предыдущий селект, если он есть
+                $('#snapshot-date-select').remove();
+
                 const select = $('<select id="snapshot-date-select" class="form-select mb-3 me-2" style="width:auto; display:inline-block;"></select>');
-                select.append('<option disabled selected>{{ __('messages.choose_snapshot_date') }}</option>');
+                select.append('<option disabled value="" selected>{{ __('messages.choose_snapshot_date') }}</option>');
 
                 dates.forEach(item => {
                     select.append(`<option value="${item.snapshot_date}">${item.snapshot_date}</option>`);
                 });
 
-                // Insert dropdown before Save button
-                $('.btn-warning').before(select);
+                // Вставка: один раз перед .btn-warning
+                $('.btn-warning').first().before(select);
 
-                // On change, load snapshot by selected date
+                let snapshotLoadedManually = false;
+
+                // Обработчик при выборе даты
                 select.on('change', function () {
                     const selectedDate = $(this).val();
-                    loadSnapshotByDate(selectedDate);
+                    if (selectedDate) {
+                        loadSnapshotByDate(selectedDate);
+                    }
                 });
+
             });
         }
+
 
         // Load snapshot data by selected date
         function loadSnapshotByDate(date) {
@@ -392,48 +455,86 @@
                 _token: "{{ csrf_token() }}",
                 snapshot_date: date
             }, function (desks) {
-                updateDeskPositions(desks);
+                // 👇 Откладываем отрисовку, чтобы DOM успел завершить предыдущий ререндер
+                setTimeout(() => {
+                    updateDeskPositions(desks);
+                }, 0);
             });
         }
 
+
         // Apply new coordinates to desks on map
         function updateDeskPositions(desks) {
+            if (typeof desk.coordinates_x !== 'number' || typeof desk.coordinates_y !== 'number') return;
             desks.forEach(desk => {
-                const element = document.querySelector(`.desk[data-id='${desk.desk_id}']`);
-                if (element) {
-                    // Обновляем координаты
-                    const capacity = parseInt(desk.capacity);
-                    const deskWidth = 52 * Math.ceil(capacity / 2);
+                const elements = document.querySelectorAll(`#desk-canvas .desk[data-id='${desk.desk_id}']`);
+
+                elements.forEach(element => {
+                    const capacity = Math.max(1, parseInt(desk.capacity) || 1); //  обязательно минимум 1
+                    const deskWidth = 52 * Math.ceil(capacity / 2); // гарантируем > 0
+
+                    // Корректный пересчет
                     const left = desk.coordinates_x * 10 - deskWidth / 2;
                     const top = desk.coordinates_y * 10;
 
                     element.style.left = `${left}px`;
                     element.style.top = `${top}px`;
 
-                    // Обновляем data-атрибуты
-                    element.dataset.capacity = desk.capacity;
+                    // Обновление атрибутов
+                    element.dataset.capacity = capacity;
                     element.dataset.name = desk.name;
-                    element.dataset.status = desk.status ?? 'available'; // значение по умолчанию
 
-                    // Удаляем все возможные классы статуса
-                    element.classList.remove('available', 'occupied', 'selected');
-
-                    // Добавляем только корректный класс, если он есть
-                    if (['available', 'occupied', 'selected'].includes(desk.status)) {
+                    if (desk.status) {
+                        element.dataset.status = desk.status;
+                        element.classList.remove('available', 'occupied', 'selected');
                         element.classList.add(desk.status);
-                    } else {
-                        // На случай если статус отсутствует или некорректен
-                        element.classList.add('available');
                     }
 
-                    // Обновляем текст (номер стола)
                     element.textContent = desk.name.replace(/[^\d]/g, '');
-                }
+                });
             });
+
         }
+
 
         // Call snapshot dropdown loader on page load
         loadSnapshotDates();
+
+        // ✅ Проверка конфликта бронирования при отправке формы
+        $('form[action="{{ route('reservations.store') }}"]').on('submit', function (e) {
+            e.preventDefault();
+
+            const deskId = $('#reservation-desk-id').val();
+            const date = $('input[name="reservation_date"]').val();
+            const time = $('input[name="reservation_time"]').val();
+            const duration = $('select[name="duration_hours"]').val();
+
+            if (!date || !time || !duration) {
+                $('#reservation-warning').removeClass('d-none').text('Please fill out all fields.');
+                return;
+            }
+
+            $.get('/reservations/check-conflict', {
+                desk_id: deskId,
+                reservation_date: date,
+                reservation_time: time,
+                duration_hours: duration
+            }).done(function (res) {
+                if (res.conflict) {
+                    $('#reservation-warning')
+                        .removeClass('d-none')
+                        .text("{{ __('messages.desk_already_reserved') }}");
+                } else {
+                    $('#reservation-warning').addClass('d-none');
+                    // Отправить форму после успешной проверки
+                    e.target.submit();
+                }
+            }).fail(function () {
+                $('#reservation-warning')
+                    .removeClass('d-none')
+                    .text('Error checking reservation. Try again.');
+            });
+        });
 
     });
 </script>

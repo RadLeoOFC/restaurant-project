@@ -198,5 +198,66 @@ return [
     'no_templates_found' => 'Keine Vorlagen gefunden.',
     'input_error' => 'Es gab einige Probleme mit Ihren Eingaben:',
 
+    'user' => 'Benutzer',
+    'no_user_attached' => 'Kein Benutzer',
+    'select_user' => 'Benutzer auswählen',
+    'no_user_selected' => 'Kein Benutzer ausgewählt',
 
+    'select_user' => 'Benutzer auswählen',
+    'no_user_selected' => 'Kein Benutzer ausgewählt',
+    'customer_already_exists' => 'Sie haben bereits ein Kundenprofil.',
+    'no_reservations_found' => 'Keine Reservierungen gefunden.',
+
+    'reservation_created' => 'Reservierung erfolgreich erstellt.',
+    'reservation_updated' => 'Reservierung aktualisiert.',
+    'reservation_deleted' => 'Reservierung gelöscht.',
+    'desk_already_reserved' => 'Dieser Tisch ist für diese Zeit oder die nächsten 4 Stunden bereits reserviert.',
+
+    'customer_created' => 'Kunde erstellt.',
+    'customer_updated' => 'Kunde aktualisiert.',
+    'customer_deleted' => 'Kunde gelöscht.',
+    'customer_already_exists' => 'Sie haben bereits ein Kundenprofil.',
+    'user_has_customer' => 'Der ausgewählte Benutzer hat bereits einen Kunden.',
+
+    'reservation_created' => 'Reservierung erstellt.',
+    'reservation_updated' => 'Reservierung aktualisiert.',
+    'reservation_deleted' => 'Reservierung gelöscht.',
+    'desk_already_reserved' => 'Dieser Tisch ist für diese Zeit oder die nächsten 4 Stunden bereits reserviert.',
+
+    'template_created' => 'Vorlage erstellt.',
+    'template_updated' => 'Vorlage aktualisiert.',
+    'template_deleted' => 'Vorlage gelöscht.',
+
+    'language_added' => 'Sprache hinzugefügt.',
+    'language_updated' => 'Sprache aktualisiert.',
+    'language_deleted' => 'Sprache gelöscht.',
+
+    'translation_added' => 'Übersetzung hinzugefügt.',
+    'translation_updated' => 'Übersetzung aktualisiert.',
+    'translation_deleted' => 'Übersetzung gelöscht.',
+
+    'role_created' => 'Rolle erfolgreich erstellt.',
+    'role_updated' => 'Rolle erfolgreich aktualisiert.',
+    'role_deleted' => 'Rolle erfolgreich gelöscht.',
+
+    'external_desk_created' => 'Externer Tisch erstellt.',
+    'external_desk_updated' => 'Externer Tisch aktualisiert.',
+    'external_desk_deleted' => 'Externer Tisch gelöscht.',
+
+    'desk_added' => 'Tisch erfolgreich hinzugefügt.',
+    'desk_updated' => 'Tisch erfolgreich aktualisiert.',
+    'desk_deleted' => 'Tisch erfolgreich gelöscht.',
+
+    'layout_snapshot_saved' => 'Eine Momentaufnahme des aktuellen Layouts wurde gespeichert.',
+
+    'access_denied' => 'Zugriff verweigert.',
+    'profile_updated' => 'Profil aktualisiert.',
+
+    'duration' => 'Dauer',
+    'hours' => 'std.',
+
+    'reserve_desk' => 'Reservieren ',
+    'reserve' => 'Reservieren',
+
+    
 ];

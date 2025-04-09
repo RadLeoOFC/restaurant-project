@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', __('messages.external_desks'))
+
 @section('content')
     <div class="container mt-4">
         <h1 style="font-size: 30px; margin-bottom:20px">{{ __('messages.external_desks') }}</h1>

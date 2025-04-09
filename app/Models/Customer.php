@@ -16,6 +16,7 @@ class Customer extends Model
         'email',
         'phone',
         'preferred_language',
+        'user_id',
     ];
 
     // A customer can have many reservations
@@ -28,5 +29,11 @@ class Customer extends Model
     {
         return $this->email;
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
 }
 

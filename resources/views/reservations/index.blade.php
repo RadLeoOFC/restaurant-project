@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', __('messages.reservation_list'))
+
 @section('content')
     <div class="container mt-4">
         <h1 style="font-size: 30px; margin-bottom:20px">{{ __('messages.reservation_list') }}</h1>

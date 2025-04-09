@@ -204,4 +204,66 @@ return [
     'no_templates_found' => 'Шаблоны не найдены.',
     'input_error' => 'Обнаружены ошибки ввода:',
 
+    'user' => 'Пользователь',
+    'no_user_attached' => 'Нет пользователя',
+    'select_user' => 'Выберите пользователя',
+    'no_user_selected' => 'Пользователь не выбран',
+
+    'select_user' => 'Выберите пользователя',
+    'no_user_selected' => 'Пользователь не выбран',
+    'customer_already_exists' => 'У вас уже есть клиентский профиль.',
+    'no_reservations_found' => 'Бронирований не найдено.',
+
+    'reservation_created' => 'Бронирование создано.',
+    'reservation_updated' => 'Бронирование обновлено.',
+    'reservation_deleted' => 'Бронирование удалено.',
+    'desk_already_reserved' => 'Этот стол уже забронирован в это время или в ближайшие 4 часа.',
+
+    'customer_created' => 'Клиент создан.',
+    'customer_updated' => 'Клиент обновлён.',
+    'customer_deleted' => 'Клиент удалён.',
+    'customer_already_exists' => 'У вас уже есть клиентский профиль.',
+    'user_has_customer' => 'У выбранного пользователя уже есть клиент.',
+
+    'reservation_created' => 'Бронирование создано.',
+    'reservation_updated' => 'Бронирование обновлено.',
+    'reservation_deleted' => 'Бронирование удалено.',
+    'desk_already_reserved' => 'Этот стол уже забронирован в это время или в ближайшие 4 часа.',
+
+    'template_created' => 'Шаблон создан.',
+    'template_updated' => 'Шаблон обновлён.',
+    'template_deleted' => 'Шаблон удалён.',
+
+    'language_added' => 'Язык добавлен.',
+    'language_updated' => 'Язык обновлён.',
+    'language_deleted' => 'Язык удалён.',
+
+    'translation_added' => 'Перевод добавлен.',
+    'translation_updated' => 'Перевод обновлён.',
+    'translation_deleted' => 'Перевод удалён.',
+
+    'role_created' => 'Роль успешно создана.',
+    'role_updated' => 'Роль успешно обновлена.',
+    'role_deleted' => 'Роль успешно удалена.',
+
+    'external_desk_created' => 'Внешний стол создан.',
+    'external_desk_updated' => 'Внешний стол обновлён.',
+    'external_desk_deleted' => 'Внешний стол удалён.',
+
+    'desk_added' => 'Стол добавлен.',
+    'desk_updated' => 'Стол обновлён.',
+    'desk_deleted' => 'Стол удалён.',
+
+    'layout_snapshot_saved' => 'Снимок текущей расстановки сохранён.',
+
+    'access_denied' => 'Доступ запрещён.',
+    'profile_updated' => 'Профиль обновлён.',
+
+    'duration' => 'Длительность',
+    'hours' => 'часов',
+
+    'reserve_desk' => 'Забронировать ',
+    'reserve' => 'Забронировать',
+
+
 ];

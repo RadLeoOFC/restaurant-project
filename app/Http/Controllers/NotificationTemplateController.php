@@ -27,7 +27,7 @@ class NotificationTemplateController extends Controller
     
         NotificationTemplate::create($request->all());
     
-        return redirect()->route('notification-templates.index')->with('success', 'Template created.');
+        return redirect()->route('notification-templates.index')->with('success', __('messages.template_created'));
     }
     
     public function edit(NotificationTemplate $notificationTemplate) {
@@ -44,12 +44,12 @@ class NotificationTemplateController extends Controller
     
         $notificationTemplate->update($request->all());
     
-        return redirect()->route('notification-templates.index')->with('success', 'Template updated.');
+        return redirect()->route('notification-templates.index')->with('success', __('messages.template_updated'));
     }
     
     public function destroy(NotificationTemplate $notificationTemplate) {
         $notificationTemplate->delete();
-        return redirect()->route('notification-templates.index')->with('success', 'Template deleted.');
+        return redirect()->route('notification-templates.index')->with('success', __('messages.template_deleted'));
     }  
     
 }

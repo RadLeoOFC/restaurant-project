@@ -36,7 +36,7 @@ class RoleController extends Controller
 
         Role::create($request->only('role_name'));
 
-        return redirect()->route('roles.index')->with('success', 'Role created successfully.');
+        return redirect()->route('roles.index')->with('success', __('messages.role_created'));
     }
 
     /**
@@ -66,7 +66,7 @@ class RoleController extends Controller
 
         $role->update($request->only('role_name'));
 
-        return redirect()->route('roles.index')->with('success', 'Role updated successfully.');
+        return redirect()->route('roles.index')->with('success', __('messages.role_updated'));
     }
 
     /**
@@ -75,6 +75,6 @@ class RoleController extends Controller
     public function destroy(Role $role)
     {
         $role->delete();
-        return redirect()->route('roles.index')->with('success', 'Role deleted successfully.');
+        return redirect()->route('roles.index')->with('success', __('messages.role_deleted'));
     }
 }

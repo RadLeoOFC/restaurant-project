@@ -23,7 +23,9 @@
                 <th>{{ __('messages.capacity') }}</th>
                 <th>{{ __('messages.status') }}</th>
                 <th>{{ __('messages.coordinates') }}</th>
-                <th>{{ __('messages.actions') }}</th>
+                @if(auth()->user()->hasRole('Admin'))
+                    <th>{{ __('messages.actions') }}</th>
+                @endif
             </tr>
         </thead>
         <tbody>
@@ -33,16 +35,18 @@
                     <td class="align-middle">{{ $desk->capacity }}</td>
                     <td class="align-middle">{{ __('messages.status_' . $desk->status) }}</td>
                     <td class="align-middle">({{ $desk->coordinates_x }}, {{ $desk->coordinates_y }})</td>
-                    <td class="text-nowrap align-middle">
-                        <a href="{{ route('desks.edit', $desk) }}" class="btn btn-warning btn-sm">{{ __('messages.edit') }}</a>
-                        <form action="{{ route('desks.destroy', $desk) }}" method="POST" class="d-inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('{{ __('messages.are_you_sure') }}')">
-                                {{ __('messages.delete') }}
-                            </button>
-                        </form>
-                    </td>
+                    @if(auth()->user()->hasRole('Admin'))
+                        <td class="text-nowrap align-middle">
+                            <a href="{{ route('desks.edit', $desk) }}" class="btn btn-warning btn-sm">{{ __('messages.edit') }}</a>
+                            <form action="{{ route('desks.destroy', $desk) }}" method="POST" class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('{{ __('messages.are_you_sure') }}')">
+                                    {{ __('messages.delete') }}
+                                </button>
+                            </form>
+                        </td>
+                    @endif
                 </tr>
             @endforeach
         </tbody>

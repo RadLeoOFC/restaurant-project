@@ -64,6 +64,13 @@
         });
     </script>
 
+    <script>
+        setInterval(() => {
+            fetch('/run-desk-statuses');
+        }, 60000); // 60 000 ms = 1 минута
+    </script>
+
+
     @yield('scripts')
 </body>
 </html>

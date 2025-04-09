@@ -67,5 +67,14 @@ class User extends Authenticatable
     {
         return optional($this->role)->role_name === $roleName;
     }
-      
+
+    public function customers()
+    {
+        return $this->hasMany(Customer::class);
+    }
+
+    public function customer()
+    {
+        return $this->hasOne(Customer::class);
+    }
 }

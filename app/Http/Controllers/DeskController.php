@@ -55,7 +55,7 @@ class DeskController extends Controller
     
         Desk::create($validated);
     
-        return redirect()->route('desks.index')->with('success', 'Desk added successfully.');
+        return redirect()->route('desks.index')->with('success', __('messages.desk_added'));
     }
 
     /**
@@ -102,7 +102,7 @@ class DeskController extends Controller
             return response()->json(['success' => true]);
         }
     
-        return redirect()->route('desks.index')->with('success', 'Desk updated successfully.');
+        return redirect()->route('desks.index')->with('success', __('messages.desk_updated'));
     }
     
 
@@ -121,7 +121,7 @@ class DeskController extends Controller
             return response()->json(['success' => true]);
         }
     
-        return redirect()->route('desks.index')->with('success', 'Desk deleted successfully.');
+        return redirect()->route('desks.index')->with('success', __('messages.desk_deleted'));
     }   
     
     public function saveSnapshot()
@@ -144,6 +144,6 @@ class DeskController extends Controller
             ]);
         }
     
-        return redirect()->back()->with('success', 'A snapshot of the current layout has been saved.');
+        return redirect()->back()->with('success', __('messages.layout_snapshot_saved'));
     }    
 }

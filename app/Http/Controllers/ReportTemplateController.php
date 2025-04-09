@@ -30,7 +30,7 @@ class ReportTemplateController extends Controller
             'filters' => json_decode($request->filters, true), // декодируем строку в массив
         ]);
     
-        return redirect()->route('report-templates.index')->with('success', 'Template created');
+        return redirect()->route('report-templates.index')->with('success', __('messages.template_created'));
     }
     
 
@@ -51,13 +51,13 @@ class ReportTemplateController extends Controller
             'filters' => json_decode($request->filters, true), // тоже декодируем
         ]);
     
-        return redirect()->route('report-templates.index')->with('success', 'Template updated');
+        return redirect()->route('report-templates.index')->with('success', __('messages.template_updated'));
     }    
 
     public function destroy(ReportTemplate $reportTemplate)
     {
         $reportTemplate->delete();
-        return redirect()->route('report-templates.index')->with('success', 'Template deleted');
+        return redirect()->route('report-templates.index')->with('success', __('messages.template_deleted'));
     }
 }
 

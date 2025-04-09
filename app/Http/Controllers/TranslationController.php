@@ -29,7 +29,7 @@ class TranslationController extends Controller
         ]);
 
         Translation::create($validated);
-        return redirect()->route('translations.index')->with('success', 'Translation added.');
+        return redirect()->route('translations.index')->with('success', __('messages.external_desk_created'));
     }
 
     public function edit(Translation $translation)
@@ -47,13 +47,13 @@ class TranslationController extends Controller
         ]);
 
         $translation->update($validated);
-        return redirect()->route('translations.index')->with('success', 'Translation updated.');
+        return redirect()->route('translations.index')->with('success', __('messages.external_desk_updated'));
     }
 
     public function destroy(Translation $translation)
     {
         $translation->delete();
-        return redirect()->route('translations.index')->with('success', 'Translation deleted.');
+        return redirect()->route('translations.index')->with('success', __('messages.external_desk_deleted'));
     }
 }
 

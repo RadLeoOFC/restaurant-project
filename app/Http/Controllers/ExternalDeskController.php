@@ -29,7 +29,7 @@ class ExternalDeskController extends Controller
         ]);
 
         ExternalDesk::create($request->all());
-        return redirect()->route('external-desks.index')->with('success', 'External desk created.');
+        return redirect()->route('external-desks.index')->with('success', __('messages.external_desk_created'));
     }
 
     public function show(ExternalDesk $externalDesk)
@@ -53,12 +53,12 @@ class ExternalDeskController extends Controller
         ]);
 
         $externalDesk->update($request->all());
-        return redirect()->route('external-desks.index')->with('success', 'External desk updated.');
+        return redirect()->route('external-desks.index')->with('success', __('messages.external_desk_updated'));
     }
 
     public function destroy(ExternalDesk $externalDesk)
     {
         $externalDesk->delete();
-        return redirect()->route('external-desks.index')->with('success', 'External desk deleted.');
+        return redirect()->route('external-desks.index')->with('success', __('messages.external_desk_deleted'));
     }
 }
