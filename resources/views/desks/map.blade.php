@@ -3,6 +3,9 @@
 @section('title', __('messages.desk_map'))
 
 @section('content')
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes">
+
 <div class="container mt-4">
     <h1 style="font-size: 30px; margin-bottom:20px">{{ __('messages.desk_layout') }}</h1>
 
@@ -65,7 +68,7 @@
 </div>
 
 <!-- Edit Modal -->
-<div id="edit-desk-modal" class="modal fade" tabindex="-1">
+<div id="edit-desk-modal" class="modal fade left-aligned" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <form id="edit-desk-form">
@@ -101,9 +104,9 @@
 </div>
 
 <!-- Reservation Modal (for Users) -->
-<div id="reservation-modal" class="modal fade" tabindex="-1">
+<div id="reservation-modal" class="modal fade left-aligned" tabindex="-1">
     <div class="modal-dialog">
-        <form action="{{ route('reservations.store') }}" method="POST" class="modal-content">
+        <form id="map-reservation-form" action="{{ route('reservations.store') }}" method="POST" class="modal-content">
             @csrf
             <input type="hidden" name="desk_id" id="reservation-desk-id">
             <div class="modal-header">
@@ -146,10 +149,11 @@
 <style>
     .zoom-pan-wrapper {
         width: 100%;
-        height: 600px;
+        height: 80vh; /* Вместо фиксированных 600px */
         overflow: auto;
         border: 2px solid #ccc;
         position: relative;
+        touch-action: pinch-zoom;
     }
 
     .desk-map-container {
@@ -207,6 +211,10 @@
         .external-desk.occupied { border-color: #F44336 !important; }
         .external-desk.selected { border-color: #FF9800 !important; }
 
+        .modal.left-aligned .modal-dialog {
+            margin-left: 0;
+            margin-right: auto;
+        }
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
@@ -242,6 +250,8 @@
         const isAdmin = @json(auth()->user()->hasRole('Admin'));
 
         let scale = 1, panX = 0, panY = 0;
+        let isPanning = false, startX = 0, startY = 0;
+
         const wrapper = document.getElementById('zoom-wrapper');
         const mapContainer = document.getElementById('desk-map-container');
 
@@ -256,12 +266,63 @@
             updateTransform();
         });
 
-        let isPanning = false, startX = 0, startY = 0;
-        wrapper.addEventListener('mousedown', e => {
-            isPanning = true;
-            startX = e.clientX - panX;
-            startY = e.clientY - panY;
+        wrapper.addEventListener('touchstart', e => {
+            if (!isDraggingDesk) {
+                isPanning = true;
+                startX = e.touches[0].clientX - panX;
+                startY = e.touches[0].clientY - panY;
+            }
         });
+
+
+        let initialPinchDistance = null;
+        let lastScale = 1;
+
+        wrapper.addEventListener('touchstart', function (e) {
+            if (e.touches.length === 1 && !isDraggingDesk) {
+                isPanning = true;
+                startX = e.touches[0].clientX - panX;
+                startY = e.touches[0].clientY - panY;
+            } else if (e.touches.length === 2) {
+                isPanning = false;
+                initialPinchDistance = null;
+            }
+        }, { passive: false });
+
+        wrapper.addEventListener('touchmove', function (e) {
+            if (e.touches.length === 2) {
+                // 👇 pinch zoom
+                e.preventDefault();
+
+                const dx = e.touches[0].clientX - e.touches[1].clientX;
+                const dy = e.touches[0].clientY - e.touches[1].clientY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (initialPinchDistance === null) {
+                    initialPinchDistance = distance;
+                } else {
+                    const scaleChange = distance / initialPinchDistance;
+                    scale = Math.max(0.3, Math.min(3, lastScale * scaleChange));
+                    updateTransform();
+                }
+            } else if (e.touches.length === 1 && isPanning && !isDraggingDesk) {
+                // 👇 pan
+                panX = e.touches[0].clientX - startX;
+                panY = e.touches[0].clientY - startY;
+                updateTransform();
+            }
+        }, { passive: false });
+
+        wrapper.addEventListener('touchend', function (e) {
+            if (e.touches.length === 0) {
+                isPanning = false;
+                lastScale = scale;
+                initialPinchDistance = null;
+            }
+        });
+
+        wrapper.addEventListener('touchend', () => isPanning = false);
+
 
         wrapper.addEventListener('mousemove', e => {
             if (!isPanning) return;
@@ -369,13 +430,18 @@
                 } else {
                     // ✅ Скрываем старое предупреждение
                     $('#reservation-warning').addClass('d-none').text('');
-                    
+
                     const name = desk.dataset.name;
                     $('#reservation-desk-id').val(id);
                     const number = name.replace(/[^\d]/g, '');
                     const translatedName = `{{ __('messages.desk_number') }}` + ' №' + number;
                     $('#reservation-desk-name').text(translatedName);
 
+                    // ⏱ Устанавливаем статус selected на 15 минут
+                    $.post('/desks/select', {
+                        _token: '{{ csrf_token() }}',
+                        desk_id: id
+                    });
 
                     // Открыть модалку
                     new bootstrap.Modal(document.getElementById('reservation-modal')).show();
@@ -383,6 +449,33 @@
             });
 
         });
+
+        function updateMapForFutureTime() {
+            const date = $('input[name="reservation_date"]').val();
+            const time = $('input[name="reservation_time"]').val();
+            const duration = $('select[name="duration_hours"]').val();
+
+            if (!date || !time || !duration) return;
+
+            $.get('/desks/future-statuses', {
+                reservation_date: date,
+                reservation_time: time,
+                duration_hours: duration
+            }, function (response) {
+                response.forEach(({ id, status }) => {
+                    const desk = document.querySelector(`.desk[data-id="${id}"]`);
+                    if (!desk) return;
+
+                    desk.classList.remove('available', 'occupied', 'selected');
+                    desk.classList.add(status);
+                    desk.dataset.status = status;
+                });
+            });
+        }
+
+        // Подключить обработчик:
+        $('input[name="reservation_date"], input[name="reservation_time"], select[name="duration_hours"]').on('change', updateMapForFutureTime);
+
 
         $('#edit-desk-form').on('submit', function (e) {
             e.preventDefault();
@@ -501,19 +594,22 @@
         loadSnapshotDates();
 
         // ✅ Проверка конфликта бронирования при отправке формы
-        $('form[action="{{ route('reservations.store') }}"]').on('submit', function (e) {
+        $('#map-reservation-form').on('submit', function (e) {
             e.preventDefault();
 
+            const $form = $(this);
             const deskId = $('#reservation-desk-id').val();
             const date = $('input[name="reservation_date"]').val();
             const time = $('input[name="reservation_time"]').val();
             const duration = $('select[name="duration_hours"]').val();
+            const token = '{{ csrf_token() }}';
 
             if (!date || !time || !duration) {
-                $('#reservation-warning').removeClass('d-none').text('Please fill out all fields.');
+                $('#reservation-warning').removeClass('d-none').text('{{ __("messages.fill_all_fields") }}');
                 return;
             }
 
+            // Предварительная проверка конфликта
             $.get('/reservations/check-conflict', {
                 desk_id: deskId,
                 reservation_date: date,
@@ -525,17 +621,39 @@
                         .removeClass('d-none')
                         .text("{{ __('messages.desk_already_reserved') }}");
                 } else {
-                    $('#reservation-warning').addClass('d-none');
-                    // Отправить форму после успешной проверки
-                    e.target.submit();
+                    // Отправляем AJAX POST на бронирование
+                    $.ajax({
+                        url: $form.attr('action'),
+                        method: 'POST',
+                        data: {
+                            _token: token,
+                            desk_id: deskId,
+                            reservation_date: date,
+                            reservation_time: time,
+                            duration_hours: duration,
+                            status: 'new'
+                        },
+                        success: function (response) {
+                            $('#reservation-warning').addClass('d-none');
+                            location.reload(); // обновляем карту
+                        },
+                        error: function (xhr) {
+                            let msg = 'Ошибка бронирования.';
+                            if (xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.message) {
+                                msg = xhr.responseJSON.message;
+                            }
+                            $('#reservation-warning')
+                                .removeClass('d-none')
+                                .text(msg);
+                        }
+                    });
                 }
             }).fail(function () {
                 $('#reservation-warning')
                     .removeClass('d-none')
-                    .text('Error checking reservation. Try again.');
+                    .text('Ошибка при проверке.');
             });
         });
-
     });
 </script>
 @endsection

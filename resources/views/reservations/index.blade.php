@@ -19,6 +19,7 @@
                     <th>{{ __('messages.date') }}</th>
                     <th>{{ __('messages.time') }}</th>
                     <th>{{ __('messages.status') }}</th>
+                    <th>{{ __('messages.period') }}</th>
                     <th class="text-center">{{ __('messages.actions') }}</th>
                 </tr>
             </thead>
@@ -30,6 +31,7 @@
                         <td>{{ $reservation->reservation_date }}</td>
                         <td>{{ $reservation->reservation_time }}</td>
                         <td>{{ __('messages.status_' . $reservation->status) }}</td>
+                        <td>{{ $reservation->duration_hours }}</td>
                         <td class="text-center">
                             <a href="{{ route('reservations.edit', $reservation) }}" class="btn btn-sm btn-warning">{{ __('messages.edit') }}</a>
                             <form action="{{ route('reservations.destroy', $reservation) }}" method="POST" class="d-inline">

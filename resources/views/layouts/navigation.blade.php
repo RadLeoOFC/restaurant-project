@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark w-100">
     @php
         $isAdmin = auth()->check() && optional(auth()->user()->role)->role_name === 'Admin';
     @endphp

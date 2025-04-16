@@ -68,10 +68,18 @@ class ReservationController extends Controller
         if (!$user->hasRole('Admin')) {
             $customer = $user->customer;
             if (!$customer) {
-                return redirect()->back()->withErrors(['customer_id' => 'У вас нет клиентского профиля.']);
+                if ($request->expectsJson()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => __('messages.customer_profile_missing'),
+                    ], 422);
+                }
+        
+                return redirect()->back()->withErrors(['customer_id' => __('messages.customer_profile_missing')]);
             }
+        
             $validated['customer_id'] = $customer->id;
-        }
+        }        
 
         $startTime = Carbon::parse($validated['reservation_time']);
         $endTime = $startTime->copy()->addHours((int) $validated['duration_hours']);
@@ -186,18 +194,18 @@ class ReservationController extends Controller
     {
         $desk = Desk::find($deskId);
         if (!$desk) return;
-
-        $now = now();
-
+    
+        $now = Carbon::now();
+    
         $hasOverlap = Reservation::where('desk_id', $deskId)
             ->where('reservation_date', $date)
             ->get()
-            ->some(function ($reservation) use ($now) {
-                $start = Carbon::parse($reservation->reservation_time);
+            ->some(function ($reservation) use ($date, $now) {
+                $start = Carbon::parse($date . ' ' . $reservation->reservation_time);
                 $end = $start->copy()->addHours((int) ($reservation->duration_hours ?? 2));
                 return $now->between($start, $end);
             });
-
+    
         if ($hasOverlap) {
             if ($desk->status !== 'occupied') {
                 $desk->status = 'occupied';
@@ -207,7 +215,7 @@ class ReservationController extends Controller
             $desk->status = 'available';
             $desk->save();
         }
-    }
+    }    
 
     protected function notifyCustomer(Customer $customer, string $templateKey)
     {
@@ -246,5 +254,41 @@ class ReservationController extends Controller
 
         return response()->json(['conflict' => $conflict]);
     }
+
+    public function getFutureStatuses(Request $request)
+    {
+        $date = $request->input('reservation_date');
+        $time = $request->input('reservation_time');
+        $duration = (int) $request->input('duration_hours', 2);
+
+        if (!$date || !$time) {
+            return response()->json([], 400);
+        }
+
+        $start = Carbon::parse($time);
+        $end = $start->copy()->addHours($duration);
+
+        $desks = Desk::all();
+        $statuses = [];
+
+        foreach ($desks as $desk) {
+            $isOccupied = Reservation::where('desk_id', $desk->id)
+                ->where('reservation_date', $date)
+                ->get()
+                ->some(function ($res) use ($start, $end) {
+                    $resStart = Carbon::parse($res->reservation_time);
+                    $resEnd = $resStart->copy()->addHours((int) ($res->duration_hours ?? 2));
+                    return $start->lt($resEnd) && $end->gt($resStart);
+                });
+
+            $statuses[] = [
+                'id' => $desk->id,
+                'status' => $isOccupied ? 'occupied' : 'available',
+            ];
+        }
+
+        return response()->json($statuses);
+    }
+
 
 }

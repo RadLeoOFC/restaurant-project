@@ -28,6 +28,10 @@ Route::get('/run-desk-statuses', function () {
     return 'Desk statuses updated.';
 });
 
+Route::get('/desks/future-statuses', [ReservationController::class, 'getFutureStatuses']);
+
+Route::post('/desks/select', [DeskController::class, 'selectTemporary']);
+
 
 Route::get('/switch-language/{locale}', function ($locale) {
     session(['app_locale' => $locale]);

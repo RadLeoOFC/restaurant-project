@@ -1,4 +1,4 @@
-<div class="d-flex flex-column flex-shrink-0 p-3 bg-white shadow-sm h-100" style="width: 250px;">
+<div class="d-flex flex-column flex-shrink-0 p-3 bg-white shadow-sm h-100 w-100 w-lg-100">
     <a href="{{ url('/') }}" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-decoration-none">
         <span class="fs-4 fw-bold">{{ __('messages.home') }}</span>
     </a>

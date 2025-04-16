@@ -4,7 +4,10 @@
 
 @section('content')
 <div class="container mt-4">
-    <h2 style="font-size: 30px; margin-bottom:20px">{{ __('messages.create_customer') }}</h2>
+    <h2 style="font-size: 30px; margin-bottom:20px">
+        {{ auth()->user()->hasRole('Admin') ? __('messages.create_customer') : __('messages.register_profile') }}
+    </h2>
+
 
     @if ($errors->any())
         <div class="alert alert-danger">

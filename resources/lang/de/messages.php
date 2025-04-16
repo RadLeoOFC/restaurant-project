@@ -52,7 +52,15 @@ return [
     'preferred_language' => 'Bevorzugte Sprache',
     'back' => 'Zurück',
     'no_customers' => 'Keine Kunden gefunden.',
+    'no_profile' => 'Sie haben noch kein Kundenprofil',
     'confirm_delete' => 'Sind Sie sicher?',
+    'customer_profile' => 'Mein Profil',
+    'register_profile' => 'Profil registrieren',
+    'edit_profile' => 'Profil bearbeiten',
+    'profile_created' => 'Profil erfolgreich erstellt.',
+    'profile_updated' => 'Profil aktualisiert.',
+    'profile_deleted' => 'Profil gelöscht.',
+
 
     // Reservations
     'reservations' => 'Reservierungen',
@@ -63,10 +71,12 @@ return [
     'customer' => 'Kunde',
     'date' => 'Datum',
     'time' => 'Uhrzeit',
+    'period' => 'Zeitraum (Stunden)',
     'status_new' => 'Neu',
     'status_confirmed' => 'Bestätigt',
     'status_cancelled' => 'Storniert',
     'no_reservations' => 'Keine Reservierungen gefunden.',
+    'customer_profile_missing' => 'Sie haben kein Kundenprofil.',
 
     // Home
     'welcome_admin_title' => 'Willkommen im Restaurant Verwaltungssystem!',
@@ -137,7 +147,7 @@ return [
     'manage_reservations_user' => 'Reservierungen',
 
     'manage_customers_admin' => 'Kunden verwalten',
-    'manage_customers_user' => 'Kunden',
+    'manage_customers_user' => 'Mein Profil',
 
     'reports' => 'Berichte',
     'report_templates' => 'Berichtsvorlagen',
@@ -156,8 +166,9 @@ return [
     'weekly' => 'Wöchentlich',
     'monthly' => 'Monatlich',
     'yearly' => 'Jährlich',
-    'number_of_reservations' => 'Anzahl der Reservierungen',
+    'number_of_reservations' => 'Anzahl der Reservierungen im ausgewählten Zeitraum',
     'date' => 'Datum',
+    'reservations_label' => 'Anzahl der Reservierungen',
 
     'report_templates' => 'Berichtsvorlagen',
     'create_new_template' => 'Neue Vorlage erstellen',
@@ -211,7 +222,7 @@ return [
     'reservation_created' => 'Reservierung erfolgreich erstellt.',
     'reservation_updated' => 'Reservierung aktualisiert.',
     'reservation_deleted' => 'Reservierung gelöscht.',
-    'desk_already_reserved' => 'Dieser Tisch ist für diese Zeit oder die nächsten 4 Stunden bereits reserviert.',
+    'desk_already_reserved' => 'Dieser Tisch ist zu diesem Zeitpunkt bereits reserviert.',
 
     'customer_created' => 'Kunde erstellt.',
     'customer_updated' => 'Kunde aktualisiert.',
@@ -222,7 +233,7 @@ return [
     'reservation_created' => 'Reservierung erstellt.',
     'reservation_updated' => 'Reservierung aktualisiert.',
     'reservation_deleted' => 'Reservierung gelöscht.',
-    'desk_already_reserved' => 'Dieser Tisch ist für diese Zeit oder die nächsten 4 Stunden bereits reserviert.',
+    'desk_already_reserved' => 'Dieser Tisch ist zu diesem Zeitpunkt bereits reserviert.',
 
     'template_created' => 'Vorlage erstellt.',
     'template_updated' => 'Vorlage aktualisiert.',
@@ -259,5 +270,7 @@ return [
     'reserve_desk' => 'Reservieren ',
     'reserve' => 'Reservieren',
 
-    
+    'footer_admin' => '© :year Admin-Panel. Alle Rechte vorbehalten.',
+    'footer_user' => '© :year Restauranttisch-Reservierungen. Alle Rechte vorbehalten.',
+ 
 ];

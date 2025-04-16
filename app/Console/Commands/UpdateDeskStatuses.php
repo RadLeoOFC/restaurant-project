@@ -47,6 +47,10 @@ class UpdateDeskStatuses extends Command
             }
         }
 
+        Desk::where('status', 'selected')
+        ->where('selected_until', '<', now())
+        ->update(['status' => 'available', 'selected_until' => null]);
+
         $this->info('Desk status update completed.');
     }
 }

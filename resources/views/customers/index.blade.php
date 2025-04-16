@@ -4,8 +4,13 @@
 
 @section('content')
 <div class="container mt-4">
-    <h1 style="font-size: 30px; margin-bottom:20px">{{ __('messages.customer_list') }}</h1>
-    <a href="{{ route('customers.create') }}" class="btn btn-primary mb-3">{{ __('messages.add_customer') }}</a>
+    <h1 style="font-size: 30px; margin-bottom:20px">
+        {{ auth()->user()->hasRole('Admin') ? __('messages.customer_list') : __('messages.customer_profile') }}
+    </h1>
+    <a href="{{ route('customers.create') }}" class="btn btn-primary mb-3">
+        {{ auth()->user()->hasRole('Admin') ? __('messages.add_customer') : __('messages.register_profile') }}
+    </a>
+
 
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
@@ -49,7 +54,7 @@
                     </td>
                 </tr>
             @empty
-                <tr><td colspan="5">{{ __('messages.no_customers') }}</td></tr>
+                <tr><td colspan="5">{{ auth()->user()->hasRole('Admin') ? __('messages.no_customers') : __('messages.no_profile') }}</td></tr>
             @endforelse
         </tbody>
     </table>

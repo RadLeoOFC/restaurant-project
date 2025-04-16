@@ -64,7 +64,9 @@ class CustomerController extends Controller
     
         $customer = Customer::create($validated);
     
-        return redirect()->route('customers.index')->with('success', __('messages.customer_created'));
+        return redirect()->route('customers.index')->with('success',
+            $user->hasRole('Admin') ? __('messages.customer_created') : __('messages.profile_created')
+        );
     }       
 
     // Show form to edit customer
@@ -117,14 +119,15 @@ class CustomerController extends Controller
     
         $customer->update($validated);
     
-        return redirect()->route('customers.index')->with('success', __('messages.customer_updated'));
+        return redirect()->route('customers.index')->with('success', $user->hasRole('Admin') ? __('messages.customer_updated') : __('messages.profile_updated'));
     }    
 
     // Delete customer
     public function destroy(Customer $customer)
     {
+        $user = auth()->user();   
         $customer->delete();
-        return redirect()->route('customers.index')->with('success', __('messages.customer_deleted'));
+        return redirect()->route('customers.index')->with('success', $user->hasRole('Admin') ? __('messages.customer_deleted') : __('messages.profile_deleted'));
     }
 }
 

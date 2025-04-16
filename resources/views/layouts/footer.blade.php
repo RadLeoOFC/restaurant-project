@@ -1,12 +1,9 @@
-<footer class="bg-dark text-white text-center py-2 mt-4">
-    <div class="container">
-        @php
-            $isAdmin = auth()->check() && optional(auth()->user()->role)->role_name === 'Admin';
-        @endphp
-
-        <p class="mb-0">
-            © {{ date('Y') }} {{ $isAdmin ? 'Admin Panel' : 'Restaurant desks reservations' }}. All rights reserved.
-        </p>
-    </div>
+<footer class="bg-dark text-white text-center py-1 w-100">
+    @php
+        $isAdmin = auth()->check() && optional(auth()->user()->role)->role_name === 'Admin';
+        $footerText = $isAdmin ? __('messages.footer_admin') : __('messages.footer_user');
+    @endphp
+    <p class="mb-0">
+        {!! str_replace(':year', date('Y'), $footerText) !!}
+    </p>
 </footer>
-

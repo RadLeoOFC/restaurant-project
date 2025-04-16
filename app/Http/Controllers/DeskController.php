@@ -7,6 +7,7 @@ use App\Models\ExternalDesk;
 use App\Models\DeskSnapshot;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class DeskController extends Controller
 {
@@ -145,5 +146,19 @@ class DeskController extends Controller
         }
     
         return redirect()->back()->with('success', __('messages.layout_snapshot_saved'));
-    }    
+    }
+    
+    public function selectTemporary(Request $request)
+    {
+        $desk = Desk::find($request->desk_id);
+        if (!$desk || $desk->status !== 'available') {
+            return response()->json(['success' => false], 404);
+        }
+
+        $desk->status = 'selected';
+        $desk->selected_until = Carbon::now()->addMinutes(15);
+        $desk->save();
+
+        return response()->json(['success' => true]);
+    }
 }

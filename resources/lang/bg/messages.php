@@ -57,7 +57,14 @@ return [
     'edit' => 'Редактирай',
     'delete' => 'Изтрий',
     'no_customers' => 'Няма намерени клиенти.',
+    'no_profile' => 'Все още нямате клиентски профил.',
     'confirm_delete' => 'Сигурни ли сте?',
+    'customer_profile' => 'Моят профил',
+    'register_profile' => 'Регистрирай профил',
+    'edit_profile' => 'Редактирай профил',
+    'profile_created' => 'Профилът беше успешно създаден.',
+    'profile_updated' => 'Профилът е актуализиран.',
+    'profile_deleted' => 'Профилът е изтрит.',
 
     // Reservations
     'reservations' => 'Резервации',
@@ -68,10 +75,12 @@ return [
     'customer' => 'Клиент',
     'date' => 'Дата',
     'time' => 'Час',
+    'period' => 'Период (часове)',
     'status_new' => 'Нова',
     'status_confirmed' => 'Потвърдена',
     'status_cancelled' => 'Отменена',
     'no_reservations' => 'Няма намерени резервации.',
+    'customer_profile_missing' => 'Нямате клиентски профил.',
 
     // Home
     'welcome_admin_title' => 'Добре дошли в системата за управление на ресторанта!',
@@ -144,7 +153,7 @@ return [
     'manage_reservations_user' => 'Резервации',
 
     'manage_customers_admin' => 'Управление на клиенти',
-    'manage_customers_user' => 'Клиенти',
+    'manage_customers_user' => 'Моят профил',
 
     'reports' => 'Отчети',
     'report_templates' => 'Шаблони за отчети',
@@ -163,8 +172,9 @@ return [
     'weekly' => 'Седмичен',
     'monthly' => 'Месечен',
     'yearly' => 'Годишен',
-    'number_of_reservations' => 'Брой резервации',
+    'number_of_reservations' => 'Брой резервации за избрания период',
     'date' => 'Дата',
+    'reservations_label' => 'Брой резервации',
 
     'report_templates' => 'Шаблони за отчети',
     'create_new_template' => 'Създай нов шаблон',
@@ -218,7 +228,7 @@ return [
     'reservation_created' => 'Резервацията е създадена.',
     'reservation_updated' => 'Резервацията е обновена.',
     'reservation_deleted' => 'Резервацията е изтрита.',
-    'desk_already_reserved' => 'Тази маса вече е резервирана за това време или следващите 4 часа.',
+    'desk_already_reserved' => 'Тази маса вече е резервирана за това време.',
     
     'customer_created' => 'Клиентът е създаден.',
     'customer_updated' => 'Клиентът е обновен.',
@@ -229,7 +239,7 @@ return [
     'reservation_created' => 'Резервацията е създадена.',
     'reservation_updated' => 'Резервацията е обновена.',
     'reservation_deleted' => 'Резервацията е изтрита.',
-    'desk_already_reserved' => 'Тази маса вече е резервирана за това време или следващите 4 часа.',
+    'desk_already_reserved' => 'Тази маса вече е резервирана за това време.',
 
     'template_created' => 'Шаблонът е създаден.',
     'template_updated' => 'Шаблонът е обновен.',
@@ -266,5 +276,7 @@ return [
     'reserve_desk' => 'Резервирай ',
     'reserve' => 'Резервирай',
 
+    'footer_admin' => '© :year Админ панел. Всички права запазени.',
+    'footer_user' => '© :year Резервации на ресторантски маси. Всички права запазени.',
 
 ];

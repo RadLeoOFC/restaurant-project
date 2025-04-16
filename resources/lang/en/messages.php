@@ -58,7 +58,15 @@ return [
     'edit' => 'Edit',
     'delete' => 'Delete',
     'no_customers' => 'No customers found.',
+    'no_profile' => "You don't have a customer profile yet",
     'confirm_delete' => 'Are you sure?',
+    'customer_profile' => 'My Profile',
+    'register_profile' => 'Register Profile',
+    'edit_profile' => 'Edit Profile',
+    'profile_created' => 'Profile successfully created.',
+    'profile_updated' => 'Profile updated.',
+    'profile_deleted' => 'Profile deleted.',
+
 
     // Reservations
     'reservations' => 'Reservations',
@@ -69,10 +77,12 @@ return [
     'customer' => 'Customer',
     'date' => 'Date',
     'time' => 'Time',
+    'period' => 'Period (hours)',
     'status_new' => 'New',
     'status_confirmed' => 'Confirmed',
     'status_cancelled' => 'Cancelled',
     'no_reservations' => 'No reservations found.',
+    'customer_profile_missing' => 'You do not have a customer profile.',
 
     // Home
     'welcome_admin_title' => 'Welcome to the restaurant management system!',
@@ -149,7 +159,7 @@ return [
     'manage_reservations_user' => 'Reservations',
 
     'manage_customers_admin' => 'Manage Customers',
-    'manage_customers_user' => 'Customers',
+    'manage_customers_user' => 'My profile',
 
     'reports' => 'Reports',
     'report_templates' => 'Report Templates',
@@ -168,8 +178,9 @@ return [
     'weekly' => 'Weekly',
     'monthly' => 'Monthly',
     'yearly' => 'Yearly',
-    'number_of_reservations' => 'Number of Reservations',
+    'number_of_reservations' => 'Number of reservations in the selected period',
     'date' => 'Date',
+    'reservations_label' => 'Number of Reservations',
 
     'report_templates' => 'Report Templates',
     'create_new_template' => 'Create New Template',
@@ -225,7 +236,7 @@ return [
     'reservation_created' => 'Reservation created successfully.',
     'reservation_updated' => 'Reservation updated.',
     'reservation_deleted' => 'Reservation deleted.',
-    'desk_already_reserved' => 'This desk is already reserved at this time or within the next 4 hours.',
+    'desk_already_reserved' => 'This desk is already reserved at this time.',
 
     'customer_created' => 'Customer created.',
     'customer_updated' => 'Customer updated.',
@@ -236,7 +247,7 @@ return [
     'reservation_created' => 'Reservation created.',
     'reservation_updated' => 'Reservation updated.',
     'reservation_deleted' => 'Reservation deleted.',
-    'desk_already_reserved' => 'This desk is already reserved at this time or within the next 4 hours.',
+    'desk_already_reserved' => 'This desk is already reserved at this time.',
 
     'template_created' => 'Template created.',
     'template_updated' => 'Template updated.',
@@ -273,5 +284,6 @@ return [
     'reserve_desk' => 'Reserve ',
     'reserve' => 'Reserve',
 
-
+    'footer_admin' => '© :year Admin Panel. All rights reserved.',
+    'footer_user' => '© :year Restaurant desks reservations. All rights reserved.',
 ];

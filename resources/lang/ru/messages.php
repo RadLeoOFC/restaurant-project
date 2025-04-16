@@ -57,7 +57,15 @@ return [
     'edit' => 'Редактировать',
     'delete' => 'Удалить',
     'no_customers' => 'Клиенты не найдены.',
+    'no_profile' => 'У вас еще нет профиля клиента.',
     'confirm_delete' => 'Вы уверены?',
+    'customer_profile' => 'Мой профиль',
+    'register_profile' => 'Зарегистрировать профиль',
+    'edit_profile' => 'Редактировать профиль',
+    'profile_created' => 'Профиль успешно создан.',
+    'profile_updated' => 'Профиль обновлён.',
+    'profile_deleted' => 'Профиль удалён.',
+
 
     
     // Reservations
@@ -69,10 +77,12 @@ return [
     'customer' => 'Клиент',
     'date' => 'Дата',
     'time' => 'Время',
+    'period' => 'Период (часы)',
     'status_new' => 'Новое',
     'status_confirmed' => 'Подтверждено',
     'status_cancelled' => 'Отменено',
     'no_reservations' => 'Бронирования не найдены.',
+    'customer_profile_missing' => 'У вас нет клиентского профиля.',
 
     // Home
     'welcome_admin_title' => 'Добро пожаловать в систему управления рестораном!',
@@ -145,7 +155,7 @@ return [
     'manage_reservations_user' => 'Бронирования',
 
     'manage_customers_admin' => 'Управление клиентами',
-    'manage_customers_user' => 'Клиенты',
+    'manage_customers_user' => 'Мой профиль',
 
     'reports' => 'Отчёты',
     'report_templates' => 'Шаблоны отчётов',
@@ -163,8 +173,9 @@ return [
     'weekly' => 'По неделям',
     'monthly' => 'По месяцам',
     'yearly' => 'По годам',
-    'number_of_reservations' => 'Количество бронирований',
+    'number_of_reservations' => 'Количество бронирований за выбранный период',
     'date' => 'Дата',
+    'reservations_label' => 'Количество бронирований',
 
     'report_templates' => 'Шаблоны отчётов',
     'create_new_template' => 'Создать новый шаблон',
@@ -217,7 +228,7 @@ return [
     'reservation_created' => 'Бронирование создано.',
     'reservation_updated' => 'Бронирование обновлено.',
     'reservation_deleted' => 'Бронирование удалено.',
-    'desk_already_reserved' => 'Этот стол уже забронирован в это время или в ближайшие 4 часа.',
+    'desk_already_reserved' => 'Этот стол уже забронирован на это время.',
 
     'customer_created' => 'Клиент создан.',
     'customer_updated' => 'Клиент обновлён.',
@@ -228,7 +239,7 @@ return [
     'reservation_created' => 'Бронирование создано.',
     'reservation_updated' => 'Бронирование обновлено.',
     'reservation_deleted' => 'Бронирование удалено.',
-    'desk_already_reserved' => 'Этот стол уже забронирован в это время или в ближайшие 4 часа.',
+    'desk_already_reserved' => 'Этот стол уже забронирован на это время.',
 
     'template_created' => 'Шаблон создан.',
     'template_updated' => 'Шаблон обновлён.',
@@ -265,5 +276,7 @@ return [
     'reserve_desk' => 'Забронировать ',
     'reserve' => 'Забронировать',
 
+    'footer_admin' => '© :year Панель администратора. Все права защищены.',
+    'footer_user' => '© :year Бронирование столов в ресторане. Все права защищены.',
 
 ];
