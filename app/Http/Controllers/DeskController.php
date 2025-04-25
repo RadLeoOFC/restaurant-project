@@ -54,10 +54,16 @@ class DeskController extends Controller
             'coordinates_y' => 'required|integer',
         ]);
     
-        Desk::create($validated);
+        $desk = Desk::create($validated);
     
+        // ✅ Вернуть JSON, если запрос был AJAX (fetch, axios, $.ajax и т.п.)
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'desk' => $desk]);
+        }
+    
+        // 👇 fallback для обычных форм (не AJAX)
         return redirect()->route('desks.index')->with('success', __('messages.desk_added'));
-    }
+    }    
 
     /**
      * Display the specified resource.

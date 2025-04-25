@@ -272,5 +272,9 @@ return [
 
     'footer_admin' => '© :year Admin-Panel. Alle Rechte vorbehalten.',
     'footer_user' => '© :year Restauranttisch-Reservierungen. Alle Rechte vorbehalten.',
+
+    'save_desk_position' => 'Position speichern',
+    'confirm_desk_move' => 'Möchten Sie eine neue Schreibtischposition speichern?',
+    'save' => 'Speichern',
  
 ];

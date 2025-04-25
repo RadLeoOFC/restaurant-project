@@ -11,9 +11,12 @@
 
     <a href="{{ route('desks.index') }}" class="btn btn-secondary mb-3">{{ __('messages.back_to_list') }}</a>
     @if(auth()->user()->hasRole('Admin'))
-        <a href="{{ route('desks.create') }}" class="btn btn-primary mb-3">{{ __('messages.add_desk') }}</a>
+        <a href="javascript:void(0);" id="open-add-desk-panel" class="btn btn-primary mb-3">{{ __('messages.add_desk') }}</a>
         <a href="{{ route('desks.snapshot') }}" class="btn btn-warning mb-3">{{ __('messages.save_snapshot') }}</a>
         <a href="javascript:void(0);" onclick="resetToTodaySnapshot()" class="btn btn-danger mb-3 ms-2">{{ __('messages.reset_map') }}</a>
+        <a href="javascript:void(0);" id="open-reservation-panel" class="btn btn-success mb-3 ms-2">
+            {{ __('messages.reserve') }}
+        </a>
     @endif
 
 
@@ -64,6 +67,53 @@
                 @endforeach
             </div>
         </div>
+        <div id="desk-move-panel" class="card shadow-sm position-fixed end-0 top-0 m-3 d-none" style="z-index: 1050; width: 280px;">
+            <div class="card-body">
+                <h5 class="card-title">📌 {{ __('messages.save_desk_position') }}</h5>
+                <p class="card-text">{{ __('messages.confirm_desk_move') }}</p>
+                <div class="d-flex justify-content-center">
+                    <button id="save-desk-move" class="btn btn-sm btn-success">{{ __('messages.save') }}</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div id="add-desk-panel" class="card position-fixed end-0 top-0 m-3 d-none shadow-lg" style="z-index: 1050; width: 320px;">
+    <div class="card-body">
+        <h5 class="card-title">{{ __('messages.add_desk') }}</h5>
+        <form id="add-desk-form" method="POST">
+            @csrf
+            <div class="mb-2">
+                <label>{{ __('messages.name') }}</label>
+                <input type="text" name="name" class="form-control" required>
+            </div>
+            <div class="mb-2">
+                <label>{{ __('messages.capacity') }}</label>
+                <input type="number" name="capacity" class="form-control" required>
+            </div>
+            <div class="mb-2">
+                <label>{{ __('messages.status') }}</label>
+                <select name="status" class="form-select">
+                    <option value="available">{{ __('messages.status_available') }}</option>
+                    <option value="occupied">{{ __('messages.status_occupied') }}</option>
+                    <option value="selected">{{ __('messages.status_selected') }}</option>
+                </select>
+            </div>
+            <div class="mb-2">
+                <label>X</label>
+                <input type="number" name="coordinates_x" class="form-control" required>
+            </div>
+            <div class="mb-2">
+                <label>Y</label>
+                <input type="number" name="coordinates_y" class="form-control" required>
+            </div>
+            <div class="d-flex justify-content-between mt-3">
+                <button type="button" id="close-add-desk-panel" class="btn btn-outline-secondary">{{ __('messages.cancel') }}</button>
+                <button type="submit" class="btn btn-success">{{ __('messages.create') }}</button>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -104,18 +154,18 @@
 </div>
 
 <!-- Reservation Modal (for Users) -->
-<div id="reservation-modal" class="modal fade left-aligned" tabindex="-1">
-    <div class="modal-dialog">
-        <form id="map-reservation-form" action="{{ route('reservations.store') }}" method="POST" class="modal-content">
+<div id="reservation-modal" class="card shadow-sm position-fixed end-0 top-0 m-3 d-none" tabindex="-1">
+    <div class="card-body">
+        <form id="map-reservation-form" action="{{ route('reservations.store') }}" method="POST">
             @csrf
             <input type="hidden" name="desk_id" id="reservation-desk-id">
-            <div class="modal-header">
+            <div class="card-header">
                 <h5 class="modal-title">
                     {{ __('messages.reserve_desk') }} <span id="reservation-desk-name"></span>
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body">
+            <div class="card-body">
                 <div class="mb-3">
                     <label class="form-label">{{ __('messages.date') }}</label>
                     <input type="date" name="reservation_date" class="form-control" required>
@@ -138,7 +188,61 @@
                 {{ __('messages.desk_already_reserved') }}
             </div>
 
-            <div class="modal-footer">
+            <div class="card-footer">
+                <button type="submit" class="btn btn-success">{{ __('messages.reserve') }}</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Admin Reservation Modal -->
+<div id="add-reservation-panel" class="card position-fixed end-0 top-0 m-3 d-none shadow-lg" style="z-index: 1050; width: 320px;">
+    <div class="card-body">
+        <h5 class="card-title">{{ __('messages.reserve_desk') }}</h5>
+        <form id="add-reservation-form" action="{{ route('reservations.store') }}" method="POST">
+            @csrf
+            <div class="mb-2">
+                <label class="form-label">{{ __('messages.customer') }}</label>
+                <select name="customer_id" class="form-select" required>
+                    @foreach (\App\Models\Customer::all() as $customer)
+                        <option value="{{ $customer->id }}">{{ $customer->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="mb-2">
+                <label>{{ __('messages.date') }}</label>
+                <input type="date" name="reservation_date" class="form-control" required>
+            </div>
+            <div class="mb-2">
+                <label>{{ __('messages.time') }}</label>
+                <input type="time" name="reservation_time" class="form-control" required>
+            </div>
+            <div class="mb-2">
+                <label>{{ __('messages.duration') }}</label>
+                <select name="duration_hours" class="form-select">
+                    @for ($i = 2; $i <= 8; $i++)
+                        <option value="{{ $i }}">{{ $i }} {{ __('messages.hours') }}</option>
+                    @endfor
+                </select>
+            </div>
+            <div class="mb-2">
+                <label>{{ __('messages.desk') }}</label>
+                <select name="desk_id" class="form-select">
+                    @foreach (\App\Models\Desk::all() as $desk)
+                        <option value="{{ $desk->id }}">{{ $desk->name }} ({{ $desk->status }})</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="mb-2">
+                <label>{{ __('messages.status') }}</label>
+                <select name="status" class="form-select">
+                    <option value="new">{{ __('messages.status_new') }}</option>
+                    <option value="confirmed">{{ __('messages.status_confirmed') }}</option>
+                    <option value="cancelled">{{ __('messages.status_cancelled') }}</option>
+                </select>
+            </div>
+            <div class="d-flex justify-content-between mt-3">
+                <button type="button" id="close-reservation-panel" class="btn btn-outline-secondary">{{ __('messages.cancel') }}</button>
                 <button type="submit" class="btn btn-success">{{ __('messages.reserve') }}</button>
             </div>
         </form>
@@ -344,6 +448,8 @@
             }
         });
 
+        let pendingDeskMove = null;
+
         if (isAdmin) {
             interact('.desk:not(.external-desk)').draggable({
                 listeners: {
@@ -370,47 +476,138 @@
                         isDraggingDesk = false;
                         wrapper.style.pointerEvents = 'auto';
 
-                        const target = event.target;
-                        const id = target.dataset.id;
-                        const capacity = parseInt(target.dataset.capacity) || 1;
-                        const deskWidth = 52 * Math.ceil(capacity / 2);
-                        const left = parseFloat(target.style.left);
-                        const top = parseFloat(target.style.top);
-
-                        const coordX = Math.round((left + deskWidth / 2) / 10);
+                        const t = event.target;
+                        const id = t.dataset.id;
+                        const left = parseFloat(t.style.left);
+                        const top = parseFloat(t.style.top);
+                        const width = parseFloat(t.style.width);
+                        const coordX = Math.round((left + width / 2) / 10);
                         const coordY = Math.round(top / 10);
 
-                        if (confirm("Save new desk position?")) {
-                            $.ajax({
-                                url: `/desks/${id}`,
-                                type: 'PUT',
-                                data: {
-                                    _token: "{{ csrf_token() }}",
-                                    coordinates_x: coordX,
-                                    coordinates_y: coordY
-                                },
-                                success: res => {
-                                    if (!res.success) alert("Failed to save desk.");
-                                },
-                                error: () => alert("Error saving desk.")
-                            });
-                        } else {
-                            target.style.left = target.dataset.originalLeft;
-                            target.style.top = target.dataset.originalTop;
-                        }
+                        pendingDeskMove = {
+                            element: t,
+                            id,
+                            coordX,
+                            coordY,
+                            originalLeft: t.dataset.originalLeft,
+                            originalTop: t.dataset.originalTop
+                        };
+
+                        $('#desk-move-panel').removeClass('d-none');
                     }
                 }
             });
         }
 
+        document.getElementById('open-reservation-panel')?.addEventListener('click', () => {
+            document.getElementById('add-reservation-panel').classList.remove('d-none');
+        });
 
+        document.getElementById('close-reservation-panel')?.addEventListener('click', () => {
+            document.getElementById('add-reservation-panel').classList.add('d-none');
+        });
+
+
+        // Показать форму добавления
+        document.getElementById('open-add-desk-panel').addEventListener('click', () => {
+            document.getElementById('add-desk-panel').classList.remove('d-none');
+        });
+
+        // Скрыть форму добавления
+        document.getElementById('close-add-desk-panel').addEventListener('click', () => {
+            document.getElementById('add-desk-panel').classList.add('d-none');
+        });
+
+        // Обработка формы
+        document.getElementById('add-desk-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            fetch("{{ route('desks.store') }}", {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: formData
+            })
+            .then(async response => {
+                if (response.ok) {
+                    try {
+                        const data = await response.json();
+                        if (data.success) {
+                            location.reload();
+                        } else {
+                            alert('❌ Desk creation failed. Server responded with success: false.');
+                        }
+                    } catch (parseErr) {
+                        console.warn('⚠️ JSON parsing failed, but response was OK. Reloading anyway.');
+                        location.reload(); // fallback если JSON был пуст или невалидный
+                    }
+                } else {
+                    const errorText = await response.text();
+                    throw new Error(errorText || 'Server error');
+                }
+            })
+            .catch(err => {
+                console.error('💥 Error during desk creation:', err);
+                alert('❌ Error creating desk. Please check the console for details.');
+            });
+        });
+
+        $('#save-desk-move').on('click', () => {
+            if (!pendingDeskMove) return;
+
+            const { id, coordX, coordY } = pendingDeskMove;
+
+            $.ajax({
+                url: `/desks/${id}`,
+                type: 'PUT',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    coordinates_x: coordX,
+                    coordinates_y: coordY
+                },
+                success: res => {
+                    if (!res.success) alert("Failed to save desk.");
+                    $('#desk-move-panel').addClass('d-none');
+                    pendingDeskMove = null;
+                    clearTimeout(window._autoResetTimeout);
+                },
+                error: () => alert("Error saving desk.")
+            });
+        });
+
+
+        $('#cancel-desk-move').on('click', () => {
+            if (!pendingDeskMove) return;
+
+            const { element, originalLeft, originalTop } = pendingDeskMove;
+            element.style.left = originalLeft;
+            element.style.top = originalTop;
+
+            $('#desk-move-panel').addClass('d-none');
+            pendingDeskMove = null;
+        });
+
+        document.getElementById('open-reservation-panel')?.addEventListener('click', () => {
+            reservationPanelActive = true;
+            new bootstrap.Modal(document.getElementById('admin-reservation-modal')).show();
+        });
 
         document.querySelectorAll('.desk:not(.external-desk)').forEach(desk => {
             desk.addEventListener('click', () => {
                 const id = desk.dataset.id;
+                const name = desk.dataset.name;
+                const reservationPanelVisible = !document.getElementById('add-reservation-panel')?.classList.contains('d-none');
 
-                if (isAdmin) {
-                    const name = desk.dataset.name;
+                if (isAdmin && reservationPanelVisible) {
+                    // 👉 Режим бронирования — заполняем поле desk_id
+                    const select = document.querySelector('#add-reservation-form select[name="desk_id"]');
+                    if (select) {
+                        select.value = id;
+                    }
+                } else if (isAdmin) {
+                    // 👉 Режим редактирования
                     const capacity = desk.dataset.capacity;
                     const status = desk.dataset.status;
                     const left = parseFloat(desk.style.left) || 0;
@@ -427,28 +624,10 @@
                     $('#edit-desk-coordinates-y').val(coordY);
 
                     new bootstrap.Modal(document.getElementById('edit-desk-modal')).show();
-                } else {
-                    // ✅ Скрываем старое предупреждение
-                    $('#reservation-warning').addClass('d-none').text('');
-
-                    const name = desk.dataset.name;
-                    $('#reservation-desk-id').val(id);
-                    const number = name.replace(/[^\d]/g, '');
-                    const translatedName = `{{ __('messages.desk_number') }}` + ' №' + number;
-                    $('#reservation-desk-name').text(translatedName);
-
-                    // ⏱ Устанавливаем статус selected на 15 минут
-                    $.post('/desks/select', {
-                        _token: '{{ csrf_token() }}',
-                        desk_id: id
-                    });
-
-                    // Открыть модалку
-                    new bootstrap.Modal(document.getElementById('reservation-modal')).show();
                 }
             });
-
         });
+
 
         function updateMapForFutureTime() {
             const date = $('input[name="reservation_date"]').val();

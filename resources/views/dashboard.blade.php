@@ -4,20 +4,21 @@
 
 @section('content')
 
-<div style="max-height: 55px; overflow: auto; margin-bottom: 20px;">
+<div style="max-height: 70px; overflow-y: auto;">
     @php
         $notifications = auth()->user()->notifications ?? [];
         $isAdmin = auth()->user()->role->role_name === 'Admin';
     @endphp
 
     @forelse ($notifications as $notification)
-        <div style="font-size: 25px; color: green; margin-bottom: 10px;">
+        <div style="font-size: 24px; color: green; padding-bottom: 60px;">
             {{ $notification->data['message'] }}
         </div>
     @empty
         <div style="color: gray;">{{ __('messages.no_notifications') }}</div>
     @endforelse
 </div>
+
 
 <div class="dashboard-container">
     <h1 style="font-size: 50px; margin-bottom:30px">

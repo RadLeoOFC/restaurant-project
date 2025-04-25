@@ -12,11 +12,13 @@ class ReservationNotification extends Notification
 
     protected $key;
     protected $language;
+    protected $byAdmin;
 
-    public function __construct(string $key, string $language = 'en')
+    public function __construct(string $key, string $language = 'en', bool $byAdmin = false)
     {
         $this->key = $key;
         $this->language = $language;
+        $this->byAdmin = $byAdmin;
     }
 
     public function via($notifiable)
@@ -26,10 +28,12 @@ class ReservationNotification extends Notification
 
     public function toArray($notifiable)
     {
-        // Пробуем взять язык клиента из сессии, иначе fallback на установленный в Notification
         $language = session('customer_locale', $this->language);
 
-        $template = NotificationTemplate::where('key', $this->key)
+        // Используем другой ключ, если действие сделал админ
+        $finalKey = $this->byAdmin ? "{$this->key}_by_admin" : $this->key;
+
+        $template = NotificationTemplate::where('key', $finalKey)
             ->where('language_code', $language)
             ->first();
 
@@ -40,3 +44,4 @@ class ReservationNotification extends Notification
         ];
     }
 }
+

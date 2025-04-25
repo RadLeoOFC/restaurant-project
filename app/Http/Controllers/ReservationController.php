@@ -220,14 +220,16 @@ class ReservationController extends Controller
     protected function notifyCustomer(Customer $customer, string $templateKey)
     {
         $language = $customer->preferred_language ?? 'en';
-        $notification = new ReservationNotification($templateKey, $language);
-
+        $byAdmin = auth()->user()?->hasRole('Admin') ?? false;
+    
+        $notification = new ReservationNotification($templateKey, $language, $byAdmin);
+    
         $customer->notify($notification);
-
-        if (auth()->check()) {
-            auth()->user()->notify($notification);
+    
+        if ($customer->user) {
+            $customer->user->notify($notification);
         }
-    }
+    }     
 
     public function checkConflict(Request $request)
     {

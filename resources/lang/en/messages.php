@@ -286,4 +286,10 @@ return [
 
     'footer_admin' => '© :year Admin Panel. All rights reserved.',
     'footer_user' => '© :year Restaurant desks reservations. All rights reserved.',
+
+    'save_desk_position' => 'Save Position',
+    'confirm_desk_move' => 'Do you want to save new desk position?',
+    'cancel' => 'Cancel',
+    'save' => 'Save',
+
 ];
