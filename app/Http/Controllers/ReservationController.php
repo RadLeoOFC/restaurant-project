@@ -11,18 +11,28 @@ use Carbon\Carbon;
 
 class ReservationController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $user = auth()->user();
-
-        $reservations = $user->hasRole('Admin')
-            ? Reservation::all()
-            : Reservation::whereHas('customer', function ($query) use ($user) {
-                $query->where('user_id', $user->id);
-            })->get();
-
-        return view('reservations.index', compact('reservations'));
+        $date = $request->input('reservation_date') ?? now()->toDateString();
+    
+        $query = Reservation::query();
+    
+        if (!$user->hasRole('Admin')) {
+            $query->whereHas('customer', function ($q) use ($user) {
+                $q->where('user_id', $user->id);
+            });
+        }
+    
+        $query->where('reservation_date', $date);
+    
+        $reservations = $query->get();
+        $desks = \App\Models\Desk::all();
+        $externalDesks = \App\Models\ExternalDesk::all();
+    
+        return view('reservations.index', compact('reservations', 'desks', 'externalDesks', 'date'));
     }
+    
 
     public function create(Request $request)
     {
@@ -292,5 +302,16 @@ class ReservationController extends Controller
         return response()->json($statuses);
     }
 
+    public function showModal(Reservation $reservation)
+    {
+        return view('reservations.partials.show', compact('reservation'));
+    }
+
+    public function editModal(Reservation $reservation)
+    {
+        $desks = Desk::all(); // или только доступные
+        $customers = Customer::all(); // если админ
+        return view('reservations.partials.edit', compact('reservation', 'desks', 'customers'));
+    }
 
 }

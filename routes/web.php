@@ -55,7 +55,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/snapshots/load', [SnapshotController::class, 'load']);
     Route::post('/snapshots/reset', [SnapshotController::class, 'reset']);
 
+    Route::get('/reservations/{reservation}/modal', [ReservationController::class, 'showModal']);
+    Route::get('/reservations/{reservation}/edit-modal', [ReservationController::class, 'editModal']);
     Route::resource('reservations', ReservationController::class);
+
     Route::resource('customers', CustomerController::class);
 
     Route::get('/test-locale', function () {

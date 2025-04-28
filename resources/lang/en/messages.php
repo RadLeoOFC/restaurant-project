@@ -292,4 +292,7 @@ return [
     'cancel' => 'Cancel',
     'save' => 'Save',
 
+    'filter' => 'Filter',
+    'yesterday' => 'Yesterday',
+    'tomorrow' => 'Tomorrow',
 ];
