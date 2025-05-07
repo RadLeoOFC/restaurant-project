@@ -282,4 +282,16 @@ return [
     'save_desk_position' => 'Сохранить позицию',
     'confirm_desk_move' => 'Хотите сохранить новое положение стола?',
 
+    'reservation_details' => 'Информация о бронировании',
+    'desk_details' => 'Управление столом',
+
+    'search_by_key' => 'Поиск по ключу',
+    'clear' => 'Очистить',
+    'filter' => 'Фильтр',
+
+    'desk_creation_form_uncompleted_alert_message' => 'Введите имя и вместимость',
+
+    'type' => 'Тип стола',
+    'normal_desk' => 'Обычный',
+    'external_desk' => 'Внешний',
 ];

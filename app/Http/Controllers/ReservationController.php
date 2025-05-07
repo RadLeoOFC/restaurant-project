@@ -29,8 +29,12 @@ class ReservationController extends Controller
         $reservations = $query->get();
         $desks = \App\Models\Desk::all();
         $externalDesks = \App\Models\ExternalDesk::all();
+        $customers = \App\Models\Customer::all();
     
-        return view('reservations.index', compact('reservations', 'desks', 'externalDesks', 'date'));
+        $reservedDeskIds = Reservation::where('reservation_date', $date)->pluck('desk_id')->toArray();
+
+        return view('reservations.index', compact('reservations', 'desks', 'externalDesks', 'date', 'reservedDeskIds', 'customers'));
+
     }
     
 
@@ -65,54 +69,59 @@ class ReservationController extends Controller
     public function store(Request $request)
     {
         $user = auth()->user();
-
+    
         $validated = $request->validate([
-            'desk_id' => 'required|exists:desks,id',
+            'desk_id' => 'required|string',
             'reservation_date' => 'required|date',
             'reservation_time' => 'required',
             'status' => 'required|in:new,confirmed,cancelled',
             'duration_hours' => 'required|integer|min:2|max:8',
             'customer_id' => 'nullable|exists:customers,id',
         ]);
-
+    
+        $deskId = explode(',', $validated['desk_id']);
+    
         if (!$user->hasRole('Admin')) {
             $customer = $user->customer;
             if (!$customer) {
-                if ($request->expectsJson()) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => __('messages.customer_profile_missing'),
-                    ], 422);
-                }
-        
-                return redirect()->back()->withErrors(['customer_id' => __('messages.customer_profile_missing')]);
+                return back()->withErrors(['customer_id' => __('messages.customer_profile_missing')]);
             }
-        
             $validated['customer_id'] = $customer->id;
-        }        
-
+        }
+    
         $startTime = Carbon::parse($validated['reservation_time']);
         $endTime = $startTime->copy()->addHours((int) $validated['duration_hours']);
-
-        $conflict = Reservation::where('desk_id', $validated['desk_id'])
-            ->where('reservation_date', $validated['reservation_date'])
-            ->get()
-            ->some(function ($existingReservation) use ($startTime, $endTime) {
-                $existingStart = Carbon::parse($existingReservation->reservation_time);
-                $existingEnd = $existingStart->copy()->addHours((int) ($existingReservation->duration_hours ?? 2));
-                return $startTime->lt($existingEnd) && $endTime->gt($existingStart);
-            });
-
-        if ($conflict) {
-            return back()->withErrors(['desk_id' => __('messages.desk_already_reserved')]);
+    
+        foreach ($deskId as $deskId) {
+            $conflict = Reservation::where('desk_id', $deskId)
+                ->where('reservation_date', $validated['reservation_date'])
+                ->get()
+                ->some(function ($existingReservation) use ($startTime, $endTime) {
+                    $existingStart = Carbon::parse($existingReservation->reservation_time);
+                    $existingEnd = $existingStart->copy()->addHours((int) ($existingReservation->duration_hours ?? 2));
+                    return $startTime->lt($existingEnd) && $endTime->gt($existingStart);
+                });
+    
+            if ($conflict) {
+                return back()->withErrors(['desk_id' => __('messages.desk_already_reserved')]);
+            }
+    
+            $reservation = Reservation::create([
+                'desk_id' => $validated['desk_id'],
+                'customer_id' => $validated['customer_id'],
+                'reservation_date' => $validated['reservation_date'],
+                'reservation_time' => $validated['reservation_time'],
+                'duration_hours' => $validated['duration_hours'],
+                'status' => $validated['status'],
+            ]);
+    
+            $this->updateDeskStatus($deskId, $validated['reservation_date']);
+            $this->notifyCustomer($reservation->customer, 'reservation_created');
         }
-
-        $reservation = Reservation::create($validated);
-        $this->updateDeskStatus($reservation->desk_id, $reservation->reservation_date);
-        $this->notifyCustomer($reservation->customer, 'reservation_created');
-
+    
         return redirect()->route('reservations.index')->with('success', __('messages.reservation_created'));
     }
+    
 
     public function edit(Reservation $reservation, Request $request)
     {

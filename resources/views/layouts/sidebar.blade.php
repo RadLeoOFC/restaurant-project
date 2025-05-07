@@ -83,18 +83,4 @@
         @endif
     </ul>
     <hr>
-    <div class="dropdown">
-        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
-            <strong>{{ auth()->check() ? Auth::user()->name : __('Guest') }}</strong>
-        </a>
-        <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{{ route('profile.edit') }}">{{ __('messages.profile') }}</a></li>
-            <li>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button class="dropdown-item text-danger" type="submit">{{ __('messages.logout') }}</button>
-                </form>
-            </li>
-        </ul>
-    </div>
 </div>

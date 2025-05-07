@@ -295,4 +295,17 @@ return [
     'filter' => 'Filter',
     'yesterday' => 'Yesterday',
     'tomorrow' => 'Tomorrow',
+
+    'reservation_details' => 'Reservation Information',
+    'desk_details' => 'Desk Management',
+
+    'search_by_key' => 'Search by key',
+    'clear' => 'Clear',
+
+    'desk_creation_form_uncompleted_alert_message' => 'Enter name and capacity',
+
+    'type' => 'Type of table',
+    'normal_desk' => 'Regular',
+    'external_desk' => 'External',
+
 ];

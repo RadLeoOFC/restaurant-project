@@ -48,7 +48,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     
     Route::get('/desks/map', [DeskController::class, 'map'])->name('desks.map');
     Route::get('/desks/snapshot', [DeskController::class, 'saveSnapshot'])->name('desks.snapshot');
+    Route::post('/desks/save-all', [DeskController::class, 'saveAll']);
     Route::resource('desks', DeskController::class);
+    Route::post('/external-desks/save-all', [ExternalDeskController::class, 'saveAll'])->middleware('auth');
     Route::resource('external-desks', ExternalDeskController::class);
 
     Route::get('/snapshots/list', [SnapshotController::class, 'list']);
@@ -76,8 +78,10 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin'])->group(function ()
     Route::resource('roles', \App\Http\Controllers\RoleController::class);
     Route::resource('notification-templates', \App\Http\Controllers\NotificationTemplateController::class);
 
-    Route::resource('languages', LanguageController::class); 
+    Route::resource('languages', LanguageController::class);
     
+    Route::put('/translations/bulk-update', [TranslationController::class, 'bulkUpdate'])->name('translations.bulkUpdate');
+    Route::delete('/translations/delete-key/{key}', [TranslationController::class, 'destroyKey'])->name('translations.destroyKey');
     Route::resource('translations', TranslationController::class);
 
     Route::resource('report-templates', ReportTemplateController::class)->middleware('auth');

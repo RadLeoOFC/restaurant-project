@@ -11,117 +11,137 @@
 
     <a href="{{ route('desks.index') }}" class="btn btn-secondary mb-3">{{ __('messages.back_to_list') }}</a>
     @if(auth()->user()->hasRole('Admin'))
-        <a href="javascript:void(0);" id="open-add-desk-panel" class="btn btn-primary mb-3">{{ __('messages.add_desk') }}</a>
         <a href="{{ route('desks.snapshot') }}" class="btn btn-warning mb-3">{{ __('messages.save_snapshot') }}</a>
         <a href="javascript:void(0);" onclick="resetToTodaySnapshot()" class="btn btn-danger mb-3 ms-2">{{ __('messages.reset_map') }}</a>
-        <a href="javascript:void(0);" id="open-reservation-panel" class="btn btn-success mb-3 ms-2">
-            {{ __('messages.reserve') }}
-        </a>
     @endif
 
-
-    <!-- остальная часть остаётся без изменений -->
-
-    <div class="zoom-pan-wrapper" id="zoom-wrapper">
-        <div class="desk-map-container" id="desk-map-container">
-            @php
-                $maxX = $desks->max('coordinates_x');
-                $maxY = $desks->max('coordinates_y');
-            @endphp
-            <div id="desk-canvas" style="width: {{ ($maxX + 10) * 10 }}px; height: {{ ($maxY + 10) * 10 }}px;">
-                @foreach($desks as $desk)
+    <div class="row">
+        <div class="col-md-9"> <!-- Сначала карта -->
+            <div class="zoom-pan-wrapper" id="zoom-wrapper">
+                <div class="desk-map-container" id="desk-map-container">
                     @php
-                        $scale = ceil($desk->capacity / 2);
-                        $unitSize = 52;
-                        $deskWidth = $unitSize * $scale;
-                        $left = $desk->coordinates_x * 10 - ($deskWidth / 2);
-                        $top = $desk->coordinates_y * 10;
+                        $maxX = $desks->max('coordinates_x');
+                        $maxY = $desks->max('coordinates_y');
                     @endphp
-                    <div class="desk {{ $desk->status }}"
-                         data-id="{{ $desk->id }}"
-                         data-name="{{ $desk->name }}"
-                         data-capacity="{{ $desk->capacity }}"
-                         data-status="{{ $desk->status }}"
-                         style="width: {{ $deskWidth }}px; left: {{ $left }}px; top: {{ $top }}px;">
-                        {{ preg_replace('/[^0-9]/', '', $desk->name) }}
-                    </div>
-                @endforeach
+                    <div id="desk-canvas" style="width: {{ ($maxX + 10) * 10 }}px; height: {{ ($maxY + 10) * 10 }}px;">
+                        @foreach($desks as $desk)
+                            @php
+                                $unitCount = ceil($desk->capacity / 2);
+                                $unitSize = 60;
+                                $spacing = 5;
+                                $leftStart = $desk->coordinates_x * 10 - (($unitSize + $spacing) * $unitCount - $spacing) / 2;
+                                $top = $desk->coordinates_y * 10;
+                                $statusClass = in_array($desk->status, ['occupied', 'selected']) ? $desk->status : 'available';
+                            @endphp
 
+                            <div class="desk-group {{ $statusClass }}"
+                                style="left: {{ $leftStart }}px; top: {{ $top }}px;"
+                                data-id="{{ $desk->id }}"
+                                data-type="desk"
+                                data-name="{{ $desk->name }}"
+                                data-capacity="{{ $desk->capacity }}"
+                                data-status="{{ $desk->status }}">
+                                @for ($i = 0; $i < $unitCount; $i++)
+                                    <div class="desk-unit {{ $statusClass }}">
+                                        @if ($i == 0)
+                                            <span class="desk-label">{{ preg_replace('/[^0-9]/', '', $desk->name) }}</span>
+                                        @endif
+                                    </div>
+                                @endfor
+                            </div>
+                        @endforeach
 
-                @foreach($externalDesks as $desk)
-                    @php
-                        $scale = ceil($desk->capacity / 2);
-                        $unitSize = 52;
-                        $deskWidth = $unitSize * $scale;
-                        $left = $desk->coordinates_x * 10 - ($deskWidth / 2);
-                        $top = $desk->coordinates_y * 10;
-                    @endphp
-                    <div class="desk external-desk {{ $desk->status }}"
-                        data-id="{{ $desk->id }}"
-                        data-name="{{ $desk->name }}"
-                        data-capacity="{{ $desk->capacity }}"
-                        data-status="{{ $desk->status }}"
-                        style="width: {{ $deskWidth }}px; left: {{ $left }}px; top: {{ $top }}px;">
-                        {{ preg_replace('/[^0-9]/', '', $desk->name) }}
+                        @foreach($externalDesks as $desk)
+                            @php
+                                $unitCount = ceil($desk->capacity / 2);
+                                $unitSize = 60;
+                                $spacing = 5;
+                                $leftStart = $desk->coordinates_x * 10 - (($unitSize + $spacing) * $unitCount - $spacing) / 2;
+                                $top = $desk->coordinates_y * 10;
+                                $statusClass = in_array($desk->status, ['occupied', 'selected']) ? $desk->status : 'available';
+                            @endphp
+
+                            <div class="desk-group {{ $statusClass }}"
+                                style="left: {{ $leftStart }}px; top: {{ $top }}px;"
+                                data-id="{{ $desk->id }}"
+                                data-type="external"
+                                data-name="{{ $desk->name }}"
+                                data-capacity="{{ $desk->capacity }}"
+                                data-status="{{ $desk->status }}">
+                                @for ($i = 0; $i < $unitCount; $i++)
+                                    <div class="desk-unit external-desk-unit {{ $statusClass }}">
+                                        @if ($i == 0)
+                                            <span class="desk-label">{{ preg_replace('/[^0-9]/', '', $desk->name) }}</span>
+                                        @endif
+                                    </div>
+                                @endfor
+                            </div>
+                        @endforeach
                     </div>
-                @endforeach
-            </div>
-        </div>
-        <div id="desk-move-panel" class="card shadow-sm position-fixed end-0 top-0 m-3 d-none" style="z-index: 1050; width: 280px;">
-            <div class="card-body">
-                <h5 class="card-title">📌 {{ __('messages.save_desk_position') }}</h5>
-                <p class="card-text">{{ __('messages.confirm_desk_move') }}</p>
-                <div class="d-flex justify-content-center">
-                    <button id="save-desk-move" class="btn btn-sm btn-success">{{ __('messages.save') }}</button>
                 </div>
             </div>
         </div>
 
+        @if(auth()->user()->hasRole('Admin'))
+            <div class="col-md-3"> <!-- Потом форма -->
+                <div id="desk-form-panel" class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ __('messages.desk_details') }}</h5>
+                        <form id="desk-form" method="POST">
+                            @csrf
+                            <input type="hidden" name="desk_id" id="desk-id">
+                            <div class="mb-2">
+                                <label>{{ __('messages.name') }}</label>
+                                <input type="text" name="name" id="desk-name" class="form-control" required>
+                            </div>
+                            <div class="mb-2">
+                                <label>{{ __('messages.capacity') }}</label>
+                                <input type="number" name="capacity" id="desk-capacity" class="form-control" required>
+                            </div>
+                            <div class="mb-2">
+                                <label>{{ __('messages.status') }}</label>
+                                <select name="status" id="desk-status" class="form-select">
+                                    <option value="available">{{ __('messages.status_available') }}</option>
+                                    <option value="occupied">{{ __('messages.status_occupied') }}</option>
+                                    <option value="selected">{{ __('messages.status_selected') }}</option>
+                                </select>
+                            </div>
+                            <div class="mb-2">
+                                <label>{{ __('messages.type') }}</label>
+                                <div class="custom-select-container">
+                                    <div class="custom-select-display" id="select-display">
+                                        <img id="selected-icon" src="/images/desk-green.png" alt="Selected Icon" width="24" height="24">
+                                        <span id="selected-text">{{ __('messages.normal_desk') }}</span>
+                                    </div>
+                                    <ul class="custom-select-options" id="options-list" style="display: none;">
+                                        <li data-value="normal" data-icon="/images/desk-green.png">
+                                            <img src="/images/desk-green.png" width="24" height="24">
+                                            {{ __('messages.normal_desk') }}
+                                        </li>
+                                        <li data-value="external" data-icon="/images/external_desk-green.png">
+                                            <img src="/images/external_desk-green.png" width="24" height="24">
+                                            {{ __('messages.external_desk') }}
+                                        </li>
+                                    </ul>
+                                    <input type="hidden" name="type" id="desk-type" value="normal">
+                                </div>
+                            </div>
+                            <button type="button" id="add-desk-btn" class="btn btn-primary">{{ __('messages.add_desk') }}</button>
+                            <button type="button" id="save-desk-btn" class="btn btn-success">{{ __('messages.save') }}</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        @endif
     </div>
-</div>
 
-<div id="add-desk-panel" class="card position-fixed end-0 top-0 m-3 d-none shadow-lg" style="z-index: 1050; width: 320px;">
-    <div class="card-body">
-        <h5 class="card-title">{{ __('messages.add_desk') }}</h5>
-        <form id="add-desk-form" method="POST">
-            @csrf
-            <div class="mb-2">
-                <label>{{ __('messages.name') }}</label>
-                <input type="text" name="name" class="form-control" required>
-            </div>
-            <div class="mb-2">
-                <label>{{ __('messages.capacity') }}</label>
-                <input type="number" name="capacity" class="form-control" required>
-            </div>
-            <div class="mb-2">
-                <label>{{ __('messages.status') }}</label>
-                <select name="status" class="form-select">
-                    <option value="available">{{ __('messages.status_available') }}</option>
-                    <option value="occupied">{{ __('messages.status_occupied') }}</option>
-                    <option value="selected">{{ __('messages.status_selected') }}</option>
-                </select>
-            </div>
-            <div class="mb-2">
-                <label>X</label>
-                <input type="number" name="coordinates_x" class="form-control" required>
-            </div>
-            <div class="mb-2">
-                <label>Y</label>
-                <input type="number" name="coordinates_y" class="form-control" required>
-            </div>
-            <div class="d-flex justify-content-between mt-3">
-                <button type="button" id="close-add-desk-panel" class="btn btn-outline-secondary">{{ __('messages.cancel') }}</button>
-                <button type="submit" class="btn btn-success">{{ __('messages.create') }}</button>
-            </div>
-        </form>
-    </div>
 </div>
 
 <!-- Edit Modal -->
 <div id="edit-desk-modal" class="modal fade left-aligned" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form id="edit-desk-form">
+            <form id="edit-desk-form" data-external="false">
                 <div class="modal-header">
                     <h5 class="modal-title">{{ __('messages.edit_desk') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -154,18 +174,18 @@
 </div>
 
 <!-- Reservation Modal (for Users) -->
-<div id="reservation-modal" class="card shadow-sm position-fixed end-0 top-0 m-3 d-none" tabindex="-1">
-    <div class="card-body">
-        <form id="map-reservation-form" action="{{ route('reservations.store') }}" method="POST">
+<div id="reservation-modal" class="modal fade left-aligned" tabindex="-1">
+    <div class="modal-dialog">
+        <form id="map-reservation-form" action="{{ route('reservations.store') }}" method="POST" class="modal-content">
             @csrf
             <input type="hidden" name="desk_id" id="reservation-desk-id">
-            <div class="card-header">
+            <div class="modal-header">
                 <h5 class="modal-title">
                     {{ __('messages.reserve_desk') }} <span id="reservation-desk-name"></span>
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="card-body">
+            <div class="modal-body">
                 <div class="mb-3">
                     <label class="form-label">{{ __('messages.date') }}</label>
                     <input type="date" name="reservation_date" class="form-control" required>
@@ -188,7 +208,7 @@
                 {{ __('messages.desk_already_reserved') }}
             </div>
 
-            <div class="card-footer">
+            <div class="modal-footer">
                 <button type="submit" class="btn btn-success">{{ __('messages.reserve') }}</button>
             </div>
         </form>
@@ -234,12 +254,18 @@
                 </select>
             </div>
             <div class="mb-2">
-                <label>{{ __('messages.status') }}</label>
-                <select name="status" class="form-select">
-                    <option value="new">{{ __('messages.status_new') }}</option>
-                    <option value="confirmed">{{ __('messages.status_confirmed') }}</option>
-                    <option value="cancelled">{{ __('messages.status_cancelled') }}</option>
-                </select>
+                <label>{{ __('messages.type') }}</label>
+                <div class="custom-select-container">
+                    <div class="custom-select-display">
+                        <img id="selected-icon" src="/images/desk-green.png" alt="Selected Icon" width="24" height="24">
+                        <span id="selected-text">{{ __('messages.normal_desk') }}</span>
+                    </div>
+                    <ul class="custom-select-options">
+                        <li data-value="normal" data-icon="/images/desk-green.png">{{ __('messages.normal_desk') }}</li>
+                        <li data-value="external" data-icon="/images/external_desk-green.png">{{ __('messages.external_desk') }}</li>
+                    </ul>
+                    <input type="hidden" name="type" id="desk-type" value="normal">
+                </div>
             </div>
             <div class="d-flex justify-content-between mt-3">
                 <button type="button" id="close-reservation-panel" class="btn btn-outline-secondary">{{ __('messages.cancel') }}</button>
@@ -251,38 +277,71 @@
 
 
 <style>
-    .zoom-pan-wrapper {
-        width: 100%;
-        height: 80vh; /* Вместо фиксированных 600px */
-        overflow: auto;
-        border: 2px solid #ccc;
-        position: relative;
-        touch-action: pinch-zoom;
-    }
+        /* Обертка и холст */
+        .zoom-pan-wrapper {
+            width: 100%;
+            height: 80vh;
+            overflow: auto;
+            border: 2px solid #ccc;
+            position: relative;
+            touch-action: pinch-zoom;
+        }
 
-    .desk-map-container {
-        transform-origin: 0 0;
-        position: absolute;
-        top: 0;
-        left: 0;
-    }
+        .desk-map-container {
+            transform-origin: 0 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        #desk-canvas {
+            position: relative;
+        }
 
-    .desk {
-        position: absolute;
-        height: 52px;
-        color: white;
-        font-weight: bold;
-        text-align: center;
-        line-height: 52px;
-        cursor: pointer;
-        z-index: 1;
-    }
+        /* Группа столов */
+        .desk-group {
+            position: absolute;
+            display: flex;
+            gap: 0;
+            cursor: pointer;
+            min-height: 60px;
+        }
 
-    .desk.available { background: green; }
-    .desk.occupied { background: red; }
-    .desk.selected { background: orange; }
+        /* Визуальный блок каждого места */
+        .desk-unit {
+            width: 60px;
+            height: 60px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            position: relative;
+        }
 
-    .desk::before {
+        /* Цвета статусов через изображения */
+        .desk-unit.available {
+            background-image: url('/images/desk-green.png');
+        }
+        .desk-unit.occupied {
+            background-image: url('/images/desk-red.png');
+        }
+        .desk-unit.selected {
+            background-image: url('/images/desk-orange.png');
+        }
+
+        /* Метка номера стола */
+        .desk-label {
+            position: absolute;
+            top: -18px;
+            left: 0;
+            font-size: 13px;
+            font-weight: bold;
+            color: #000;
+            background: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            box-shadow: 0 0 2px rgba(0,0,0,0.1);
+        }
+
+        .desk::before {
             content: "";
             position: absolute;
             top: 0;
@@ -315,10 +374,105 @@
         .external-desk.occupied { border-color: #F44336 !important; }
         .external-desk.selected { border-color: #FF9800 !important; }
 
+        .external-desk-unit {
+            width: 50px;
+            height: 60px;
+            border: none;
+            background-color: transparent;
+            background-size: 100% 100%; /* или cover */
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+
+        .external-desk-unit.available {
+            background-image: url('/images/external_desk-green.png');
+        }
+        .external-desk-unit.occupied {
+            background-image: url('/images/external_desk-red.png');
+        }
+        .external-desk-unit.selected {
+            background-image: url('/images/external_desk-orange.png');
+        }
+
         .modal.left-aligned .modal-dialog {
             margin-left: 0;
             margin-right: auto;
         }
+
+        .desk.selected {
+            background-color: orange !important;
+        }
+
+        .desk-type-select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background: url('/images/desk-green.png') no-repeat 5px center;
+            background-size: 24px;
+            padding-left: 35px;
+            height: 40px;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding-right: 10px;
+        }
+
+        .desk-type-select option[value="external"] {
+            background: url('/images/external_desk-green.png') no-repeat 5px center;
+            background-size: 24px;
+        }
+
+        .custom-select-container {
+            position: relative;
+            width: 100%;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .custom-select-display {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ccc;
+            padding: 8px;
+            background-color: #fff;
+            border-radius: 4px;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        .custom-select-options {
+            display: none; /* скрыто по умолчанию */
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-top: 5px;
+            padding: 0;
+            list-style-type: none;
+            z-index: 1000;
+        }
+
+        .custom-select-options li {
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .custom-select-options li:hover {
+            background-color: #f0f0f0;
+        }
+
+        .custom-select-options li img {
+            width: 24px;
+            height: 24px;
+        }
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
@@ -451,7 +605,7 @@
         let pendingDeskMove = null;
 
         if (isAdmin) {
-            interact('.desk:not(.external-desk)').draggable({
+            interact('.desk-group').draggable({
                 listeners: {
                     start(event) {
                         isDraggingDesk = true;
@@ -499,59 +653,26 @@
             });
         }
 
-        document.getElementById('open-reservation-panel')?.addEventListener('click', () => {
-            document.getElementById('add-reservation-panel').classList.remove('d-none');
-        });
-
-        document.getElementById('close-reservation-panel')?.addEventListener('click', () => {
-            document.getElementById('add-reservation-panel').classList.add('d-none');
-        });
-
-
-        // Показать форму добавления
-        document.getElementById('open-add-desk-panel').addEventListener('click', () => {
-            document.getElementById('add-desk-panel').classList.remove('d-none');
-        });
-
-        // Скрыть форму добавления
-        document.getElementById('close-add-desk-panel').addEventListener('click', () => {
-            document.getElementById('add-desk-panel').classList.add('d-none');
-        });
-
-        // Обработка формы
-        document.getElementById('add-desk-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const formData = new FormData(this);
-            fetch("{{ route('desks.store') }}", {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: formData
-            })
-            .then(async response => {
-                if (response.ok) {
-                    try {
-                        const data = await response.json();
-                        if (data.success) {
-                            location.reload();
-                        } else {
-                            alert('❌ Desk creation failed. Server responded with success: false.');
-                        }
-                    } catch (parseErr) {
-                        console.warn('⚠️ JSON parsing failed, but response was OK. Reloading anyway.');
-                        location.reload(); // fallback если JSON был пуст или невалидный
-                    }
-                } else {
-                    const errorText = await response.text();
-                    throw new Error(errorText || 'Server error');
-                }
-            })
-            .catch(err => {
-                console.error('💥 Error during desk creation:', err);
-                alert('❌ Error creating desk. Please check the console for details.');
+        const openReservationPanelButton = document.getElementById('open-reservation-panel');
+        if (openReservationPanelButton) {
+            openReservationPanelButton.addEventListener('click', () => {
+                document.getElementById('add-reservation-panel').classList.remove('d-none');
             });
+        }
+
+        const closeReservationPanelButton = document.getElementById('close-reservation-panel');
+        if (closeReservationPanelButton) {
+            closeReservationPanelButton.addEventListener('click', () => {
+                document.getElementById('add-reservation-panel').classList.add('d-none');
+            });
+        }
+
+        // Закрытие панели
+        $('#close-reservation-panel').on('click', function () {
+            $('#add-reservation-panel').addClass('d-none');
+
+            // Убрать выделение при закрытии модалки
+            $('.desk').removeClass('selected');
         });
 
         $('#save-desk-move').on('click', () => {
@@ -589,45 +710,193 @@
             pendingDeskMove = null;
         });
 
-        document.getElementById('open-reservation-panel')?.addEventListener('click', () => {
-            reservationPanelActive = true;
-            new bootstrap.Modal(document.getElementById('admin-reservation-modal')).show();
-        });
-
-        document.querySelectorAll('.desk:not(.external-desk)').forEach(desk => {
+        document.querySelectorAll('.desk-group').forEach(desk => {
             desk.addEventListener('click', () => {
+                const isExternal = desk.classList.contains('external-desk');
                 const id = desk.dataset.id;
                 const name = desk.dataset.name;
-                const reservationPanelVisible = !document.getElementById('add-reservation-panel')?.classList.contains('d-none');
+                const capacity = desk.dataset.capacity;
+                const status = desk.dataset.status;
+                const left = parseFloat(desk.style.left) || 0;
+                const top = parseFloat(desk.style.top) || 0;
+                const width = parseFloat(desk.style.width) || 52;
+                const coordX = Math.round((left + width / 2) / 10);
+                const coordY = Math.round(top / 10);
 
-                if (isAdmin && reservationPanelVisible) {
-                    // 👉 Режим бронирования — заполняем поле desk_id
-                    const select = document.querySelector('#add-reservation-form select[name="desk_id"]');
-                    if (select) {
-                        select.value = id;
+                if (isAdmin) {
+                    const reservationPanelVisible = !document.getElementById('add-reservation-panel')?.classList.contains('d-none');
+
+                    if (reservationPanelVisible) {
+                        const select = document.querySelector('#add-reservation-form select[name="desk_id"]');
+                        if (select) select.value = id;
+                    } else {
+                        // Админ редактирует любой стол
+                        $('#edit-desk-id').val(id);
+                        $('#edit-desk-name').val(name);
+                        $('#edit-desk-capacity').val(capacity);
+                        $('#edit-desk-status').val(status);
+                        $('#edit-desk-coordinates-x').val(coordX);
+                        $('#edit-desk-coordinates-y').val(coordY);
+
+                        new bootstrap.Modal(document.getElementById('edit-desk-modal')).show();
                     }
-                } else if (isAdmin) {
-                    // 👉 Режим редактирования
-                    const capacity = desk.dataset.capacity;
-                    const status = desk.dataset.status;
-                    const left = parseFloat(desk.style.left) || 0;
-                    const top = parseFloat(desk.style.top) || 0;
-                    const width = 52 * Math.ceil(capacity / 2);
-                    const coordX = Math.round((left + width / 2) / 10);
-                    const coordY = Math.round(top / 10);
+                } else {
+                    if (isExternal) return; // ❌ обычному пользователю запрещено
 
-                    $('#edit-desk-id').val(id);
-                    $('#edit-desk-name').val(name);
-                    $('#edit-desk-capacity').val(capacity);
-                    $('#edit-desk-status').val(status);
-                    $('#edit-desk-coordinates-x').val(coordX);
-                    $('#edit-desk-coordinates-y').val(coordY);
+                    // ✅ пользователь бронирует обычный стол
+                    $('#reservation-desk-id').val(id);
 
-                    new bootstrap.Modal(document.getElementById('edit-desk-modal')).show();
+                    const number = name.replace(/[^\d]/g, '');
+                    const translatedName = `{{ __('messages.desk_number') }} №${number}`;
+                    $('#reservation-desk-name').text(translatedName);
+
+                    $.post('/desks/select', {
+                        _token: '{{ csrf_token() }}',
+                        desk_id: id
+                    });
+
+                    new bootstrap.Modal(document.getElementById('reservation-modal')).show();
                 }
             });
         });
 
+        document.getElementById('add-desk-btn').addEventListener('click', () => {
+            const name = document.getElementById('desk-name').value.trim();
+            const capacity = parseInt(document.getElementById('desk-capacity').value);
+            const status = document.getElementById('desk-status').value;
+            const type = document.getElementById('desk-type').value;
+
+            if (!name || isNaN(capacity)) {
+                alert('Введите имя и вместимость');
+                return;
+            }
+
+            const unitSize = 60;
+            const spacing = 5;
+            const unitCount = Math.ceil(capacity / 2);
+            const deskWidth = (unitSize + spacing) * unitCount - spacing;
+
+            const deskDiv = document.createElement('div');
+            deskDiv.className = `desk-group ${status}`;
+            deskDiv.style.position = 'absolute';
+            deskDiv.style.left = '0px';
+            deskDiv.style.top = '0px';
+            deskDiv.style.width = `${deskWidth}px`;
+
+            // ✅ различаем по типу
+            deskDiv.dataset.name = name;
+            deskDiv.dataset.capacity = capacity;
+            deskDiv.dataset.status = status;
+            deskDiv.dataset.type = type;
+            deskDiv.dataset.new = "true";
+
+            if (type === 'external') {
+                deskDiv.dataset.external = "true";
+            } else {
+                deskDiv.dataset.normal = "true";
+            }
+
+            for (let i = 0; i < unitCount; i++) {
+                const unitDiv = document.createElement('div');
+                unitDiv.className = `${type === 'external' ? 'external-desk-unit' : 'desk-unit'} ${status}`;
+
+                if (i === 0) {
+                    const label = document.createElement('span');
+                    label.className = 'desk-label';
+                    label.innerText = name.replace(/[^\d]/g, '') || 'N';
+                    unitDiv.appendChild(label);
+                }
+
+                deskDiv.appendChild(unitDiv);
+            }
+
+            document.getElementById('desk-map-container').appendChild(deskDiv);
+            enableDrag(deskDiv);
+        });
+
+        // Включение перетаскивания
+        function enableDrag(el) {
+            interact(el).draggable({
+                listeners: {
+                    move(event) {
+                        const dx = event.dx / scale;
+                        const dy = event.dy / scale;
+                        const left = parseFloat(el.style.left || 0);
+                        const top = parseFloat(el.style.top || 0);
+                        el.style.left = `${left + dx}px`;
+                        el.style.top = `${top + dy}px`;
+                    }
+                }
+            });
+        }
+
+        // Включить перетаскивание для всех текущих столов
+        document.querySelectorAll('.desk-group').forEach(enableDrag);
+
+        // Сохранение всех столов
+        document.getElementById('save-desk-btn').addEventListener('click', () => {
+            const desks = document.querySelectorAll('.desk-group');
+            const normalDesks = [];
+            const externalDesks = [];
+
+            desks.forEach(desk => {
+                const left = parseFloat(desk.style.left);
+                const top = parseFloat(desk.style.top);
+                const width = parseFloat(desk.offsetWidth);
+                const coordX = Math.round((left + width / 2) / 10);
+                const coordY = Math.round(top / 10);
+
+                const payload = {
+                    name: desk.dataset.name,
+                    capacity: desk.dataset.capacity,
+                    status: desk.dataset.status,
+                    coordinates_x: coordX,
+                    coordinates_y: coordY
+                };
+
+                // ✅ теперь ID привязаны к типу
+                const type = desk.dataset.type;
+
+                if (desk.dataset.id) {
+                    payload.id = desk.dataset.id;
+                    if (type === 'external') {
+                        externalDesks.push(payload);
+                    } else {
+                        normalDesks.push(payload);
+                    }
+                } else {
+                    if (type === 'external') {
+                        externalDesks.push(payload);
+                    } else {
+                        normalDesks.push(payload);
+                    }
+                }
+            });
+
+            Promise.all([
+                fetch('/desks/save-all', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ desks: normalDesks })
+                }),
+                fetch('/external-desks/save-all', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ desks: externalDesks })
+                })
+            ])
+            .then(() => location.reload())
+            .catch(err => {
+                console.error('Ошибка при сохранении столов:', err);
+                alert('Ошибка при сохранении.');
+            });
+        });
 
         function updateMapForFutureTime() {
             const date = $('input[name="reservation_date"]').val();
@@ -660,6 +929,9 @@
             e.preventDefault();
 
             const id = $('#edit-desk-id').val();
+            const isExternal = String($('#edit-desk-form').data('external')) === 'true'; 
+            const url = isExternal ? `/external-desks/${id}?_method=PUT` : `/desks/${id}`;
+
             const data = {
                 _token: "{{ csrf_token() }}",
                 name: $('#edit-desk-name').val(),
@@ -670,7 +942,7 @@
             };
 
             $.ajax({
-                url: `/desks/${id}`,
+                url,
                 type: 'PUT',
                 data,
                 success: res => res.success ? location.reload() : alert("Failed to update."),
@@ -833,6 +1105,119 @@
                     .text('Ошибка при проверке.');
             });
         });
+
+        // Показать форму добавления
+        document.getElementById('open-add-desk-panel').addEventListener('click', () => {
+            document.getElementById('add-desk-panel').classList.remove('d-none');
+        });
+
+        // Скрыть форму добавления
+        document.getElementById('close-add-desk-panel').addEventListener('click', () => {
+            document.getElementById('add-desk-panel').classList.add('d-none');
+        });
+
+        // Обработка формы
+        document.getElementById('add-desk-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            fetch("{{ route('desks.store') }}", {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: formData
+            })
+            .then(async response => {
+                if (response.ok) {
+                    try {
+                        const data = await response.json();
+                        if (data.success) {
+                            location.reload();
+                        } else {
+                            alert('❌ Desk creation failed. Server responded with success: false.');
+                        }
+                    } catch (parseErr) {
+                        console.warn('⚠️ JSON parsing failed, but response was OK. Reloading anyway.');
+                        location.reload(); // fallback если JSON был пуст или невалидный
+                    }
+                } else {
+                    const errorText = await response.text();
+                    throw new Error(errorText || 'Server error');
+                }
+            })
+            .catch(err => {
+                console.error('💥 Error during desk creation:', err);
+                alert('❌ Error creating desk. Please check the console for details.');
+            });
+        });
+
+        document.querySelectorAll('.external-desk').forEach(desk => {
+            desk.addEventListener('click', () => {
+                if (!isAdmin) return; // ✅ Только админ может редактировать
+
+                const id = desk.dataset.id;
+                const name = desk.dataset.name;
+                const capacity = desk.dataset.capacity;
+                const status = desk.dataset.status;
+                const left = parseFloat(desk.style.left) || 0;
+                const top = parseFloat(desk.style.top) || 0;
+                const width = parseFloat(desk.style.width) || 52;
+                const coordX = Math.round((left + width / 2) / 10);
+                const coordY = Math.round(top / 10);
+
+                // Заполнение формы
+                $('#edit-desk-id').val(id);
+                $('#edit-desk-name').val(name);
+                $('#edit-desk-capacity').val(capacity);
+                $('#edit-desk-status').val(status);
+                $('#edit-desk-coordinates-x').val(coordX);
+                $('#edit-desk-coordinates-y').val(coordY);
+
+                // ВАЖНО: установить data-атрибут в HTML, чтобы его правильно прочитали через .attr()
+                $('#edit-desk-form').attr('data-external', 'true');
+
+                // Открыть модалку
+                new bootstrap.Modal(document.getElementById('edit-desk-modal')).show();
+            });
+        });
     });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const selectDisplay = document.getElementById('select-display');
+        const optionsList = document.getElementById('options-list');
+        const selectedText = document.getElementById('selected-text');
+        const selectedIcon = document.getElementById('selected-icon');
+        const deskTypeInput = document.getElementById('desk-type');
+
+        // Переключение видимости списка при клике
+        selectDisplay.addEventListener('click', function (e) {
+            e.stopPropagation();
+            optionsList.style.display = optionsList.style.display === 'block' ? 'none' : 'block';
+        });
+
+        // Обработка выбора элемента
+        optionsList.addEventListener('click', function (e) {
+            const selectedOption = e.target.closest('li');
+            if (selectedOption) {
+                const value = selectedOption.getAttribute('data-value');
+                const icon = selectedOption.getAttribute('data-icon');
+                const text = selectedOption.textContent.trim();
+
+                deskTypeInput.value = value;
+                selectedIcon.src = icon;
+                selectedText.textContent = text;
+                optionsList.style.display = 'none';
+            }
+        });
+
+        // Закрытие списка при клике вне
+        document.addEventListener('click', function (e) {
+            if (!selectDisplay.contains(e.target) && !optionsList.contains(e.target)) {
+                optionsList.style.display = 'none';
+            }
+        });
+    });
+
 </script>
 @endsection

@@ -167,4 +167,40 @@ class DeskController extends Controller
 
         return response()->json(['success' => true]);
     }
+
+    public function saveAll(Request $request)
+    {
+        if (!Auth::user()->hasRole('Admin')) {
+            abort(403);
+        }
+
+        $data = $request->input('desks', []);
+
+        foreach ($data as $deskData) {
+            // Обновление существующего стола
+            if (!empty($deskData['id'])) {
+                $desk = Desk::find($deskData['id']);
+                if ($desk) {
+                    $desk->update([
+                        'coordinates_x' => $deskData['coordinates_x'],
+                        'coordinates_y' => $deskData['coordinates_y'],
+                    ]);
+                }
+            } else {
+                // Создание нового стола
+                if (!empty($deskData['name']) && !empty($deskData['capacity']) && !empty($deskData['status'])) {
+                    Desk::create([
+                        'name' => $deskData['name'],
+                        'capacity' => $deskData['capacity'],
+                        'status' => $deskData['status'],
+                        'coordinates_x' => $deskData['coordinates_x'],
+                        'coordinates_y' => $deskData['coordinates_y'],
+                    ]);
+                }
+            }
+        }
+
+        return response()->json(['success' => true]);
+    }
+
 }

@@ -277,4 +277,10 @@ return [
     'confirm_desk_move' => 'Möchten Sie eine neue Schreibtischposition speichern?',
     'save' => 'Speichern',
  
+    'reservation_details' => 'Reservierungsinformationen',
+    'desk_details' => 'Schreibtischverwaltung',
+
+    'search_by_key' => 'Nach Schlüssel suchen',
+    'clear' => 'Zurücksetzen',
+    'filter' => 'Filter',
 ];
